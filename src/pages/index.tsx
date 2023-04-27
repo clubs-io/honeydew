@@ -14,14 +14,19 @@ const Home: NextPage = () => {
   const { data: sessionData } = useSession();
   const router = useRouter();
   const [orgName, setOrgName] = useState("");
-  const currentUserOrganization = api.user?.getUserOrganization.useQuery(sessionData?.user.id ? sessionData?.user.id : "");
+  const currentUserOrganizationAndRole = api.user?.getUserOrganization.useQuery(sessionData?.user.id ? sessionData?.user.id : "");
   
-  if (currentUserOrganization.data?.organizationId) {
-    void router.push("/dashboard");
+  if (currentUserOrganizationAndRole.data?.organizationId) {
+    if (currentUserOrganizationAndRole.data?.role === "OWNER" || currentUserOrganizationAndRole.data?.role === "ADMIN"){
+      void router.push("/admin");
+    }
+    else {
+      void router.push("/user")
+    }
   }
   const createOrganization = api.organization?.createOrganization.useMutation({
     onSuccess: () => {
-      void router.push("/dashboard")
+      void router.push("/admin")
     },
   });
   // const { data: secretMessage } = api.example.getSecretMessage.useQuery(

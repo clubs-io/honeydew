@@ -17,7 +17,7 @@ const Dashboard: NextPage = () => {
     return (
       <>
         <div className="w-screen h-max flex flex-col dark:bg-slate-900">
-          <TailwindNav currentPage={"dashboard"} />
+          <TailwindNav currentPage={"user"} />
           <main className="w-screen flex justify-center min-h-screen flex-row bg-slate-50 dark:bg-slate-700">
             <div className="mt-12 mx-16 container gap-12 max-w-7xl">
               <div className="w-full h-full">

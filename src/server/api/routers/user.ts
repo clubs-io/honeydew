@@ -11,6 +11,7 @@ export const userRouter = createTRPCRouter({
         return await ctx.prisma.user.findFirst({
           select: {
             organizationId: true,
+            role: true,
           },
           where: {
             id: input,
