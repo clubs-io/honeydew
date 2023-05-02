@@ -33,7 +33,7 @@ type NavigationItem = {
 const updateNavigation = (page: string): NavigationItem[] => {
   return [
     { name: 'Dashboard', href: '/', current: page === 'admin' || page === "user"},
-    { name: 'Payments', href: '/', current:  page === 'admin' || page === "user" },
+    { name: 'Payments', href: '/user/payments', current:  page === "user/payments" },
     // { name: 'Settings', href: '/settings', current: page === 'settings' },
   ];
 };

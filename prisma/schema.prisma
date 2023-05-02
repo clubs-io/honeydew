@@ -59,6 +59,33 @@ model User {
     organization    Organization?   @relation("OrganizationMembers", fields: [organizationId], references: [id])
     organizationId  Int?
     role            UserRole        @default(MEMBER)
+    stripeCustomerId         String?
+    stripeSubscriptionId     String?
+    stripeSubscriptionStatus StripeSubscriptionStatus?
+}
+
+enum StripeSubscriptionStatus {
+    incomplete
+    incomplete_expired
+    trialing
+    active
+    past_due
+    canceled
+    unpaid
+    paused
+}
+
+model StripeEvent {
+    id               String   @id @unique
+    api_version      String?
+    data             Json
+    request          Json?
+    type             String
+    object           String
+    account          String?
+    created          DateTime
+    livemode         Boolean
+    pending_webhooks Int
 }
 
 model VerificationToken {

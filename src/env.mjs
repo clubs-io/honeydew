@@ -29,6 +29,10 @@ const server = z.object({
   AZURE_AD_CLIENT_ID: z.string(),
   AZURE_AD_CLIENT_SECRET: z.string(),
   AZURE_AD_TENANT_ID: z.string(),
+  STRIPE_PK: z.string(),
+  STRIPE_SK: z.string(),
+  STRIPE_PRICE_ID: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
 /**
@@ -60,6 +64,10 @@ const processEnv = {
   AZURE_AD_CLIENT_ID:process.env.AZURE_AD_CLIENT_ID,
   AZURE_AD_CLIENT_SECRET: process.env.AZURE_AD_CLIENT_SECRET,
   AZURE_AD_TENANT_ID: process.env.AZURE_AD_TENANT_ID,
+  STRIPE_PK: process.env.STRIPE_PK,
+  STRIPE_SK: process.env.STRIPE_SK,
+  STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
