@@ -59,6 +59,7 @@ model User {
     organization    Organization?   @relation("OrganizationMembers", fields: [organizationId], references: [id])
     organizationId  Int?
     role            UserRole        @default(MEMBER)
+    paymentRequests PaymentRequest[]
 }
 
 model VerificationToken {
@@ -76,6 +77,7 @@ model Organization {
   updatedAt   DateTime      @updatedAt
   users       User[]        @relation("OrganizationMembers")
   invitations Invitation[]
+  paymentRequest PaymentRequest[]
 }
 
 model Invitation {
@@ -89,6 +91,20 @@ model Invitation {
   status                InviteStatus            @default(PENDING)
   invitationEmailSends  InvitationEmailSends[]
   @@unique([organizationId, email], name: "emailInviteIdentifier")
+}
+
+model PaymentRequest {
+    id                    String                  @id @default(cuid())
+    toUser                User                    @relation(fields: [userId], references: [id])
+    userId                String
+    organization          Organization            @relation(fields: [organizationId], references: [id])
+    organizationId        Int
+    createdAt             DateTime                @default(now())
+    updatedAt             DateTime                @updatedAt
+    amount                Float
+    amountPending         Float                   
+    status                PaymentRequestStatus    @default(PENDING)
+    dueBy                 DateTime
 }
 
 model InvitationEmailSends {
@@ -106,6 +122,13 @@ enum UserRole {
   OWNER
   ADMIN
   MEMBER
+}
+
+enum PaymentRequestStatus {
+  COMPLETED
+  PENDING
+  REJECTED
+  OVERDUE
 }
 
 enum InviteStatus {
