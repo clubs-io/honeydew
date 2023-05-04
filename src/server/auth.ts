@@ -52,22 +52,22 @@ export const authOptions: NextAuthOptions = {
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET
+      clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
-    Auth0Provider({
-      clientId: env.AUTH0_CLIENT_ID,
-      clientSecret: env.AUTH0_CLIENT_SECRET,
-      issuer: env.AUTH0_ISSUER
-    }),
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET
-    }),
-    AzureADProvider({
-      clientId: env.AZURE_AD_CLIENT_ID,
-      clientSecret: env.AZURE_AD_CLIENT_SECRET,
-      tenantId: env.AZURE_AD_TENANT_ID,
-    }),
+    // Auth0Provider({
+    //   clientId: env.AUTH0_CLIENT_ID,
+    //   clientSecret: env.AUTH0_CLIENT_SECRET,
+    //   issuer: env.AUTH0_ISSUER
+    // }),
+    // GoogleProvider({
+    //   clientId: env.GOOGLE_CLIENT_ID,
+    //   clientSecret: env.GOOGLE_CLIENT_SECRET
+    // }),
+    // AzureADProvider({
+    //   clientId: env.AZURE_AD_CLIENT_ID,
+    //   clientSecret: env.AZURE_AD_CLIENT_SECRET,
+    //   tenantId: env.AZURE_AD_TENANT_ID,
+    // }),
     /**
      * ...add more providers here.
      *
@@ -79,12 +79,12 @@ export const authOptions: NextAuthOptions = {
      */
   ],
   pages: {
-    signIn: '/auth/signin',
+    signIn: "/auth/signin",
     // signOut: '/auth/signout',
     // error: '/auth/error', // Error code passed in query string as ?error=
     // verifyRequest: '/auth/verify-request', // (used for check email message)
     // newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
-  }
+  },
 };
 
 /**
