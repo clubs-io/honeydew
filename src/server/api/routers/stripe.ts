@@ -23,6 +23,25 @@ export const stripeRouter = createTRPCRouter({
     return orgId;
 
   }),
+  createPayment: protectedProcedure.mutation(async({ ctx }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { stripe, session, prisma, req } = ctx;
+
+    console.log(session.user?.id)
+
+    const orgId = await getOrCreateStripeAccountForOrg({
+      prisma,
+      stripe,
+      userId: session.user?.id,
+    });
+
+    if (!orgId) {
+      throw new Error("Could not create or get organization ID");
+    }
+
+    return orgId;
+
+  }),
   createCheckoutSession: protectedProcedure.mutation(async ({ ctx }) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { stripe, session, prisma, req } = ctx;
