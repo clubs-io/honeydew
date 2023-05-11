@@ -1,4 +1,3 @@
-import { Organization, User } from "@prisma/client";
 import { z } from "zod";
 
 import {
