@@ -2,6 +2,61 @@ import type { PrismaClient } from "@prisma/client";
 import type Stripe from "stripe";
 
 
+export const getOrCreateStripeAccountForOrg = async ({
+  stripe,
+  prisma,
+  userId,
+}: {
+  stripe: Stripe;
+  prisma: PrismaClient;
+  userId: string;
+}) => {
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  const org = await prisma.organization.findUnique({
+    where: {
+      id: user?.organizationId,
+    },
+  });
+
+
+
+  if (org?.stripeOrganizationId) throw new Error("Already has a stripe account");
+
+
+  // create a new customer
+  const account = await stripe.accounts.create({
+    type: 'standard',
+    // use metadata to link this Stripe customer to internal user id
+    // metadata: {
+    //   userId,
+    // },
+  });
+
+  //update with new customer id
+  const updatedOrg = await prisma.organization.update({
+    where: {
+      id: user?.organizationId,
+    },
+    data: {
+      stripeOrganizationId: account.id,
+    },
+  });
+
+  console.log(account.id)
+
+  return account
+
+  // if (updatedOrg.id) {
+  //   return updatedOrg.id;
+  // }
+};
+
 // retrieves a Stripe customer id for a given user if it exists or creates a new one
 export const getOrCreateStripeCustomerIdForUser = async ({
   stripe,

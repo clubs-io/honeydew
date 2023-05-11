@@ -1,8 +1,28 @@
 import { env } from "../../../env.mjs";
-import { getOrCreateStripeCustomerIdForUser } from "../../../server/stripe/stripe-webhook-handlers";
+import { getOrCreateStripeAccountForOrg, getOrCreateStripeCustomerIdForUser } from "../../../server/stripe/stripe-webhook-handlers";
 import { createTRPCRouter, protectedProcedure } from "../../../server/api/trpc";
 
 export const stripeRouter = createTRPCRouter({
+
+  createAccount: protectedProcedure.mutation(async({ ctx }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { stripe, session, prisma, req } = ctx;
+
+    console.log(session.user?.id)
+
+    const orgId = await getOrCreateStripeAccountForOrg({
+      prisma,
+      stripe,
+      userId: session.user?.id,
+    });
+
+    if (!orgId) {
+      throw new Error("Could not create or get organization ID");
+    }
+
+    return orgId;
+
+  }),
   createCheckoutSession: protectedProcedure.mutation(async ({ ctx }) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { stripe, session, prisma, req } = ctx;

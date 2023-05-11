@@ -9,12 +9,35 @@ import TailwindNav from "~/components/TailwindNav";
 import { useRouter } from "next/router";
 import { UserRole } from "@prisma/client";
 
+const ConnectAccount = () => {
+  const { mutateAsync: createAccount } =
+    api.stripe.createAccount.useMutation();
+  const { push } = useRouter();
+  return (
+    <button
+      className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
+      onClick={async () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        console.log("clicked")
+        const id = await createAccount();
+       // <p> {id} </p>
+       console.log(id)
+      }}
+    >
+      Connect Stripe Account
+    </button>
+  );
+};
+
 const Settings: NextPage = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter();
   const [emailInviteValue, setEmailInviteValue] = useState("");
   const currentUserOrganization = api.user?.getUserOrganization.useQuery(
     sessionData?.user.id ? sessionData?.user.id : ""
+  );
+  const currentUserOrganizationStripeAccount = api.organization?.getOrganizationStripeId.useQuery(
+    currentUserOrganization.data?.organizationId ? currentUserOrganization.data?.organizationId  : ""
   );
   const { data: orgMembers, isLoading } =
     api.organization?.getOrganizationUsers.useQuery({
@@ -179,6 +202,18 @@ const Settings: NextPage = () => {
                   <p className="text-lg text-slate-500">
                     Manage your other settings
                   </p>
+                  <div>
+                        {!isLoading && currentUserOrganizationStripeAccount.data?.stripeOrganizationId === null && (
+                            <>
+                            <ConnectAccount />
+                            </>
+                        )}
+                        {!isLoading && currentUserOrganizationStripeAccount.data?.stripeOrganizationId !== null && (
+                            <>
+                            <p className="text-xl text-gray-700">Stripe Account Connected {currentUserOrganizationStripeAccount.data?.stripeOrganizationId }!!</p>
+                            </>
+                        )}
+                  </div>
                 </Tabs.Item>
               </Tabs.Group>
             </div>

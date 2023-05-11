@@ -54,6 +54,7 @@ const AdminPayments: NextPage = () => {
     const { data: sessionData, status } = useSession();
     const router = useRouter();
     const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
+
     const { push } = useRouter();
     const { data: subscriptionStatus, isLoading, isError } = api.user.subscriptionStatus.useQuery();
     if(isLoading){
