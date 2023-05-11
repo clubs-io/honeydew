@@ -39,11 +39,26 @@ export const organizationRouter = createTRPCRouter({
         console.log("error", error);
       }
     }),
+    getOrganizationStripeId: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.organization.findFirst({
+          select: {
+            stripeOrganizationId: true,
+          },
+          where: {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            id: input
+          }
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
+    }),
     getOrganizationUsers: protectedProcedure
       .input(
           z.object({
             user_id: z.string(),
-            organization_id: z.nullable(z.number()),
+            organization_id: z.nullable(z.string()),
           }),
       ).query(async ({ ctx, input }) => {
       try {
@@ -51,6 +66,7 @@ export const organizationRouter = createTRPCRouter({
             select: {
                 role: true,
                 organizationId: true,
+                stripeCustomerId: true,
             },
             where: {
                 id: input.user_id
@@ -80,7 +96,7 @@ export const organizationRouter = createTRPCRouter({
       .input(
           z.object({
             user_id: z.string(),
-            organization_id: z.nullable(z.number()),
+            organization_id: z.nullable(z.string()),
           }),
       ).query(async ({ ctx, input }) => {
       try {
