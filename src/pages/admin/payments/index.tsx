@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { api } from "../../../utils/api";
 import TailwindNav from "~/components/TailwindNav";
 import { Badge, Spinner, Table } from "flowbite-react";
 import { useSession } from "next-auth/react";
 import { ArrowUpIcon, UserPlusIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition } from '@headlessui/react';
+import Select from 'react-select';
 
 const UpgradeButton = () => {
     const { mutateAsync: createCheckoutSession } =
@@ -75,19 +78,22 @@ const AdminPayments: NextPage = () => {
     const { data: sessionData, status } = useSession();
     const router = useRouter();
     const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
-    const [paymentNameValue, setPaymentNameValue] = useState("");
+    const [paymentIdalue, setPaymentIdValue] = useState("");
     const [paymentAmountValue, setPaymentAmountValue] = useState("");
+    const [paymentDate, setPaymentDate] = useState("");
+
 
 
     const inviteMember = api.invite?.createInvite.useMutation();
-    const createPayment = api.stripe?.createPayment.useMutation();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const createPayment = api.paymentRequest?.createPaymentRequest.useMutation();
     const currentUserOrganization = api.user?.getUserOrganization.useQuery(
         sessionData?.user.id ? sessionData?.user.id : ""
       );
       const currentUserOrganizationStripeAccount = api.organization?.getOrganizationStripeId.useQuery(
         currentUserOrganization.data?.organizationId ? currentUserOrganization.data?.organizationId  : ""
       );
-      const { data: orgMembers } =
+      const { data: orgMembers, isSuccess } =
         api.organization?.getOrganizationUsers.useQuery({
           user_id: sessionData?.user.id ? sessionData?.user.id : "",
           organization_id: currentUserOrganization.data?.organizationId
@@ -105,18 +111,39 @@ const AdminPayments: NextPage = () => {
     const [open, setOpen] = useState(false);
     const cancelButtonRef = useRef(null);
 
-    const mutateCreatePayment = () => {
-        inviteMember.mutate({
-          email: paymentNameValue,
-          orgId: currentUserOrganization.data?.organizationId
-            ? Number(currentUserOrganization.data?.organizationId)
-            : 0,
-          orgName: "HoneyDew",
+    // eslint-disable-next-line prefer-const
+    // let users = orgMembers;
+    // console.log(users);
+
+    const mutateCreatePaymentRequest = () => {
+        createPayment.mutate({
+            user_id: paymentIdalue,
+            organization_id: currentUserOrganization.data?.organizationId ? currentUserOrganization.data?.organizationId: null,
+            amount: paymentAmountValue,
+            date: paymentDate
         });
       };
 
     const { push } = useRouter();
     const { data: subscriptionStatus, isLoading, isError } = api.user.subscriptionStatus.useQuery();
+    //type Option = { value: string; label: string };
+   
+    // eslint-disable-next-line prefer-const
+    // let options: Option[] = [];
+    // eslint-disable-next-line prefer-const
+    //let options: { value: string; label: string }[] = [];
+    // eslint-disable-next-line prefer-const
+    let options: any = []
+    useEffect(() => {
+        if(orgMembers){
+            for(let i = 0; i < orgMembers.length; i++){
+                // { value: 'chocolate', label: 'Chocolate' }
+                options.push({ value: orgMembers[i]?.id ?? "", label: orgMembers[i]?.name ?? "" });
+            }
+            console.log(options);
+        }
+    }, [open]);
+    console.log(options);
     if(isLoading){
         return <div>
             Loading
@@ -433,7 +460,7 @@ const AdminPayments: NextPage = () => {
                                 leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                             >
                                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                                <form className="" onSubmit={mutateCreatePayment}>
+                                <form className="" onSubmit={mutateCreatePaymentRequest}>
                                     <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                     <div className="sm:flex sm:items-start">
                                         <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -453,17 +480,20 @@ const AdminPayments: NextPage = () => {
                                             <p className="text-sm text-gray-500">
                                             Create a payment request from a user.
                                             </p>
-                                            <input
-                                            type="text"
-                                            name="price"
-                                            id="price"
-                                            className="mt-4 block w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            placeholder="Logan"
-                                            value={paymentNameValue}
-                                            onChange={(e) =>
-                                                setPaymentNameValue(e.target.value)
-                                            }
+                                            <Select
+                                                defaultValue={[]}
+                                                isMulti
+                                                name="members"
+                                                options={options}
+                                                className="basic-multi-select"
+                                                classNamePrefix="select"
+                                                // onChange={(e) =>
+                                                //     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                                                //     setPaymentNameValue(e.target.value)
+                                                // }
                                             />
+                                            
+                                            <p>Amount To Be Requested</p>
                                             <input
                                             type="text"
                                             name="price"
@@ -473,6 +503,18 @@ const AdminPayments: NextPage = () => {
                                             value={paymentAmountValue}
                                             onChange={(e) =>
                                                 setPaymentAmountValue(e.target.value)
+                                            }
+                                            />
+                                            <p>Due Date</p>
+                                            <input
+                                            type="date"
+                                            name="price"
+                                            id="date"
+                                            className="mt-4 block w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            placeholder="May 11th"
+                                            value={paymentDate}
+                                            onChange={(e) =>
+                                                setPaymentDate(e.target.value)
                                             }
                                             />
                                         </div>

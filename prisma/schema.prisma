@@ -126,7 +126,7 @@ model PaymentRequest {
     toUser                User                    @relation(fields: [userId], references: [id])
     userId                String
     organization          Organization            @relation(fields: [organizationId], references: [id])
-    organizationId        Int
+    organizationId        String
     createdAt             DateTime                @default(now())
     updatedAt             DateTime                @updatedAt
     amount                Float
