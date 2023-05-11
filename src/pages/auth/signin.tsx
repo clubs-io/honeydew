@@ -58,8 +58,8 @@ export default function SignIn({
         <div className="flex h-full w-full flex-col items-center justify-between py-36">
           <div className="mx-auto flex max-w-xl flex-col gap-8">
             <h1 className="text-4xl text-white">
-              Few things make me feel more powerful than honeydew to make my
-              life easier and more efficient by managing my fraternity
+              As the treasurer of a large fraternity, I cannot overstate the
+              impact Honeydew has had on streamlining our financial management.
             </h1>
             <div className="flex flex-row items-start justify-between gap-4">
               <div>
