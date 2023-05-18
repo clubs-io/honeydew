@@ -39,5 +39,22 @@ export const userRouter = createTRPCRouter({
           }
         });
       }),
+      getUserPaymentRequests: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
+        const { session, prisma } = ctx;
+  
+        if (session && !session.user?.id) {
+          throw new Error("Not authenticated");
+        }
+    
+        if (session)
+          return ctx.prisma.user.findUnique({
+            where: {
+              id: session.user?.id,
+            },
+            select: {
+              paymentRequests: true,
+            }
+          });
+      }),
   });
 
