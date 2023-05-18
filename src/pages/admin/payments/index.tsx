@@ -137,10 +137,6 @@ const AdminPayments: NextPage = () => {
     });
   };
 
-  const handleNameChange = (selectedOption: { value: any; label: string }) => {
-    setPaymentDate(selectedOption);
-  };
-
   const { push } = useRouter();
   const {
     data: subscriptionStatus,
@@ -470,11 +466,12 @@ const AdminPayments: NextPage = () => {
                                   options={options}
                                   className="basic-multi-select"
                                   classNamePrefix="select"
-                                  onChange={handleNameChange}
-                                  // onChange={(e) =>
-                                  //   //eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                                  //   setPaymentNameValue(e.target.value)
-                                  // }
+                                //   onChange={}
+                                  onChange={(e) =>
+                                    //eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                                    // setPaymentNameValue(e.target.value)
+                                    console.log(e.value)
+                                  }
                                 />
 
                                 <p>Amount To Be Requested</p>
@@ -497,18 +494,9 @@ const AdminPayments: NextPage = () => {
                                   className="mt-4 block w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                   placeholder="May 11th"
                                   value={
-                                    paymentDate
-                                      ? paymentDate
-                                          .toISOString()
-                                          .substring(0, 10)
-                                      : undefined
+                                    paymentDate?.toString()
                                   }
-                                  onChange={(event) => {
-                                    // const dateSet = new Date(
-                                    //   event.target.value
-                                    // );
-                                    setPaymentDate(dateSet);
-                                  }}
+                                  onChange={handleDateChange}
                                 />
                               </div>
                             </div>
