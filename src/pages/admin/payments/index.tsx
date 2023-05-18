@@ -469,8 +469,8 @@ const AdminPayments: NextPage = () => {
                                 //   onChange={}
                                   onChange={(e) =>
                                     //eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                                    // setPaymentNameValue(e.target.value)
-                                    console.log(e.value)
+                                    setPaymentIdValue(e.value)
+                                    // console.log(e);
                                   }
                                 />
 
