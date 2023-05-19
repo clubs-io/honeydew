@@ -1,27 +1,43 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
-import { Fragment, JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useState, useRef } from "react";
-import { Button, Checkbox, Label, Modal, Spinner, Tabs, TextInput } from "flowbite-react";
+import {
+  Fragment,
+  type JSXElementConstructor,
+  type Key,
+  type ReactElement,
+  type ReactFragment,
+  type ReactPortal,
+  useState,
+  useRef,
+} from "react";
+import {
+  Button,
+  Checkbox,
+  Label,
+  Modal,
+  Spinner,
+  Tabs,
+  TextInput,
+} from "flowbite-react";
 import { PlusIcon, UserPlusIcon } from "@heroicons/react/24/outline";
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition } from "@headlessui/react";
 import TailwindNav from "~/components/TailwindNav";
 import { useRouter } from "next/router";
-import { UserRole } from "@prisma/client";
+import { type UserRole } from "@prisma/client";
 
 const ConnectAccount = () => {
-  const { mutateAsync: createAccount } =
-    api.stripe.createAccount.useMutation();
+  const { mutateAsync: createAccount } = api.stripe.createAccount.useMutation();
   const { push } = useRouter();
   return (
     <button
       className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
       onClick={async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        console.log("clicked")
+        console.log("clicked");
         const id = await createAccount();
-       // <p> {id} </p>
-       console.log(id)
+        // <p> {id} </p>
+        console.log(id);
       }}
     >
       Connect Stripe Account
@@ -36,9 +52,12 @@ const Settings: NextPage = () => {
   const currentUserOrganization = api.user?.getUserOrganization.useQuery(
     sessionData?.user.id ? sessionData?.user.id : ""
   );
-  const currentUserOrganizationStripeAccount = api.organization?.getOrganizationStripeId.useQuery(
-    currentUserOrganization.data?.organizationId ? currentUserOrganization.data?.organizationId  : ""
-  );
+  const currentUserOrganizationStripeAccount =
+    api.organization?.getOrganizationStripeId.useQuery(
+      currentUserOrganization.data?.organizationId
+        ? currentUserOrganization.data?.organizationId
+        : ""
+    );
   const { data: orgMembers, isLoading } =
     api.organization?.getOrganizationUsers.useQuery({
       user_id: sessionData?.user.id ? sessionData?.user.id : "",
@@ -59,33 +78,48 @@ const Settings: NextPage = () => {
   const cancelButtonRef = useRef(null);
 
   const mutateInviteMember = () => {
-    inviteMember.mutate({
-      email: emailInviteValue,
-      orgId: currentUserOrganization.data?.organizationId
-        ? Number(currentUserOrganization.data?.organizationId)
-        : 0,
-      orgName: "HoneyDew",
-    });
+    if (currentUserOrganization.data?.organizationId) {
+      inviteMember.mutate({
+        email: emailInviteValue,
+        orgId: currentUserOrganization.data.organizationId,
+        orgName: "HoneyDew",
+      });
+    }
   };
 
   // Function to find the role by email
-  function findRoleByEmail(users: { id: string; role: UserRole; name: string | null; email: string | null; }[], emailToFind: string): UserRole | null {
-    const user = users.find(user => user.email === emailToFind);
+  function findRoleByEmail(
+    users: {
+      id: string;
+      role: UserRole;
+      name: string | null;
+      email: string | null;
+    }[],
+    emailToFind: string
+  ): UserRole | null {
+    const user = users.find((user) => user.email === emailToFind);
     return user ? user.role : "MEMBER";
   }
 
-  const userRole = (!sessionData || !orgMembers) ? "MEMBER" : findRoleByEmail(orgMembers, sessionData.user?.email ? sessionData.user?.email : "");
-  const isAdminOrHigher = (userRole === "ADMIN" || userRole === "OWNER") ? true : false
-  if (status === "unauthenticated"){
-    void router.push("/")
+  const userRole =
+    !sessionData || !orgMembers
+      ? "MEMBER"
+      : findRoleByEmail(
+          orgMembers,
+          sessionData.user?.email ? sessionData.user?.email : ""
+        );
+  const isAdminOrHigher =
+    userRole === "ADMIN" || userRole === "OWNER" ? true : false;
+  if (status === "unauthenticated") {
+    void router.push("/");
   }
-  if (status === "authenticated" && isAdminOrHigher){
+  if (status === "authenticated" && isAdminOrHigher) {
     return (
       <>
         <div className="flex h-max w-screen flex-col dark:bg-slate-900">
           <TailwindNav currentPage={"settings"} />
-          <main className="w-screen justify-center flex min-h-screen flex-row bg-slate-50 dark:bg-slate-800">
-            <div className="container flex flex-col gap-12 px-4 py-8 max-w-7xl">
+          <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-800">
+            <div className="container flex max-w-7xl flex-col gap-12 px-4 py-8">
               <h1 className="text-4xl font-medium text-slate-800 dark:text-slate-100 sm:block">
                 Settings
               </h1>
@@ -93,9 +127,12 @@ const Settings: NextPage = () => {
                 <Tabs.Item title="Members">
                   <div className="flex justify-between">
                     <div>
-                      <h1 className="text-2xl text-slate-900 dark:text-slate-100">Team members</h1>
+                      <h1 className="text-2xl text-slate-900 dark:text-slate-100">
+                        Team members
+                      </h1>
                       <p className="text-lg text-slate-500">
-                        Manage your organization&apos;s members and account permissions here.
+                        Manage your organization&apos;s members and account
+                        permissions here.
                       </p>
                     </div>
                     <div>
@@ -104,16 +141,18 @@ const Settings: NextPage = () => {
                         className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
                         onClick={() => setOpen(true)}
                       >
-                        <PlusIcon className="h-6 w-6 mr-2" />
+                        <PlusIcon className="mr-2 h-6 w-6" />
                         Add team member
                       </button>
                     </div>
                   </div>
-                  <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-                  <div className="w-full flex flex-row">
-                    <h1 className="w-60 text-slate-500 font-semibold">Active</h1>
+                  <hr className="my-8 h-px border-0 bg-gray-200 dark:bg-gray-700" />
+                  <div className="flex w-full flex-row">
+                    <h1 className="w-60 font-semibold text-slate-500">
+                      Active
+                    </h1>
                     <table className="w-full max-w-xl text-left text-sm text-gray-500 dark:text-gray-400">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                      <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                           <th scope="col" className="px-6 py-3">
                             Name
@@ -129,34 +168,39 @@ const Settings: NextPage = () => {
                             (member: {
                               id: Key | null | undefined;
                               name:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<
-                                any,
-                                string | JSXElementConstructor<any>
-                              >
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<
+                                    any,
+                                    string | JSXElementConstructor<any>
+                                  >
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
                               role:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<
-                                any,
-                                string | JSXElementConstructor<any>
-                              >
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<
+                                    any,
+                                    string | JSXElementConstructor<any>
+                                  >
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
                             }) => {
                               return (
-                                <tr key={member.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-
-                                  <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <tr
+                                  key={member.id}
+                                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
+                                >
+                                  <th
+                                    scope="row"
+                                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                                  >
                                     {member.name}
                                   </th>
                                   <td>{member.role}</td>
@@ -167,11 +211,13 @@ const Settings: NextPage = () => {
                       </tbody>
                     </table>
                   </div>
-                  <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-                  <div className="w-full flex flex-row">
-                    <h1 className="w-60 text-slate-500 font-semibold">Invites</h1>
+                  <hr className="my-8 h-px border-0 bg-gray-200 dark:bg-gray-700" />
+                  <div className="flex w-full flex-row">
+                    <h1 className="w-60 font-semibold text-slate-500">
+                      Invites
+                    </h1>
                     <table className="w-full max-w-xl text-left text-sm text-gray-500 dark:text-gray-400">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                      <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                           <th scope="col" className="px-6 py-3">
                             Email
@@ -185,8 +231,14 @@ const Settings: NextPage = () => {
                         {orgInvites &&
                           orgInvites?.map((invite) => {
                             return (
-                              <tr key={invite.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                              <tr
+                                key={invite.id}
+                                className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
+                              >
+                                <th
+                                  scope="row"
+                                  className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                                >
                                   {invite.email}
                                 </th>
                                 <td>{invite.status}</td>
@@ -203,16 +255,27 @@ const Settings: NextPage = () => {
                     Manage your other settings
                   </p>
                   <div>
-                        {!isLoading && currentUserOrganizationStripeAccount.data?.stripeOrganizationId === null && (
-                            <>
-                            <ConnectAccount />
-                            </>
-                        )}
-                        {!isLoading && currentUserOrganizationStripeAccount.data?.stripeOrganizationId !== null && (
-                            <>
-                            <p className="text-xl text-gray-700">Stripe Account Connected {currentUserOrganizationStripeAccount.data?.stripeOrganizationId }!!</p>
-                            </>
-                        )}
+                    {!isLoading &&
+                      currentUserOrganizationStripeAccount.data
+                        ?.stripeOrganizationId === null && (
+                        <>
+                          <ConnectAccount />
+                        </>
+                      )}
+                    {!isLoading &&
+                      currentUserOrganizationStripeAccount.data
+                        ?.stripeOrganizationId !== null && (
+                        <>
+                          <p className="text-xl text-gray-700">
+                            Stripe Account Connected{" "}
+                            {
+                              currentUserOrganizationStripeAccount.data
+                                ?.stripeOrganizationId
+                            }
+                            !!
+                          </p>
+                        </>
+                      )}
                   </div>
                 </Tabs.Item>
               </Tabs.Group>
@@ -314,10 +377,10 @@ const Settings: NextPage = () => {
     );
   }
   return (
-    <div className="flex flex-col items-center justify-center m-72">
+    <div className="m-72 flex flex-col items-center justify-center">
       <Spinner size="xl" />
     </div>
-  )
+  );
 };
 
 export default Settings;
