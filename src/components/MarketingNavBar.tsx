@@ -1,20 +1,7 @@
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
-const navigation = [
-  { name: "Home", href: "/admin/home", current: false },
-  { name: "Members", href: "/admin/members", current: false },
-  { name: "Payments", href: "/admin/payments", current: false },
-  { name: "Calendar", href: "/admin/calendar", current: false },
-  { name: "Transfers", href: "/admin/transfers", current: false },
-];
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
-
 const MarketingNavbar = () => {
-  const { data: sessionData } = useSession();
   return (
     <header className="fixed w-full">
       <nav className="border-gray-200 bg-white py-2.5 dark:bg-gray-900">

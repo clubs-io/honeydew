@@ -67,9 +67,8 @@ export const inviteRouter = createTRPCRouter({
               id: input.orgId,
             },
           });
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          const clientUrl =
-            process.env.NEXT_PUBLIC_URL + "/auth/signin/" + invite.token;
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/restrict-template-expressions
+          const clientUrl = `${process.env.NEXT_PUBLIC_URL}/auth/signin/${invite.token}`;
           await client.sendEmailWithTemplate(
             {
               From: "akshay@afterquote.com",
@@ -91,6 +90,7 @@ export const inviteRouter = createTRPCRouter({
               },
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
             },
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             async (error, result) => {
               if (error) {
                 console.error(error);
