@@ -426,6 +426,7 @@ const AdminPayments: NextPage = () => {
                                 <Select
                                   defaultValue={""}
                                   name="requests"
+                                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                                   options={options}
                                   className="basic-multi-select"
                                   classNamePrefix="select"
