@@ -106,6 +106,7 @@ model Organization {
   invitations          Invitation[]
   stripeOrganizationId String?
   paymentRequest       PaymentRequest[]
+  calendarLink         String?
 }
 
 model Invitation {

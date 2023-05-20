@@ -6,7 +6,6 @@ import {
   UserIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
@@ -46,17 +45,17 @@ const updateNavigation = (page: string): NavigationItem[] => {
     {
       name: "Payments",
       href: "/admin/payments",
-      current: page === "/admin/payments",
+      current: page === "payments",
     },
     {
       name: "Members",
       href: "/admin/members",
-      current: page === "/admin/members",
+      current: page === "members",
     },
     {
       name: "Calendar",
       href: "/admin/calendar",
-      current: page === "/admin/calendar",
+      current: page === "calendar",
     },
   ];
 };

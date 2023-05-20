@@ -22,7 +22,7 @@ import {
 } from "flowbite-react";
 import { PlusIcon, UserPlusIcon } from "@heroicons/react/24/outline";
 import { Dialog, Transition } from "@headlessui/react";
-import TailwindNav from "~/components/TailwindNav";
+import TailwindNav from "~/components/AdminNav";
 import { useRouter } from "next/router";
 import { type UserRole } from "@prisma/client";
 
