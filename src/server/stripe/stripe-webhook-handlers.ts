@@ -1,7 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import type Stripe from "stripe";
 
-
 export const getOrCreateStripeAccountForOrg = async ({
   stripe,
   prisma,
@@ -11,46 +10,53 @@ export const getOrCreateStripeAccountForOrg = async ({
   prisma: PrismaClient;
   userId: string;
 }) => {
-
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
     },
   });
 
-  const org = await prisma.organization.findUnique({
-    where: {
-      id: user?.organizationId,
-    },
-  });
+  let org;
+  if (user?.organizationId !== null) {
+    org = await prisma.organization.findUnique({
+      where: {
+        id: user?.organizationId,
+      },
+    });
+  }
+  // const org = await prisma.organization.findUnique({
+  //   where: {
+  //     id: user?.organizationId,
+  //   },
+  // });
 
-
-
-  if (org?.stripeOrganizationId) throw new Error("Already has a stripe account");
-
+  if (org?.stripeOrganizationId)
+    throw new Error("Already has a stripe account");
 
   // create a new customer
   const account = await stripe.accounts.create({
-    type: 'standard',
+    type: "standard",
     // use metadata to link this Stripe customer to internal user id
     // metadata: {
     //   userId,
     // },
   });
 
-  //update with new customer id
-  const updatedOrg = await prisma.organization.update({
-    where: {
-      id: user?.organizationId,
-    },
-    data: {
-      stripeOrganizationId: account.id,
-    },
-  });
+  let updatedOrg;
+  if (user !== null && user.organizationId !== null) {
+    updatedOrg = await prisma.organization.update({
+      where: {
+        id: user.organizationId,
+      },
+      data: {
+        stripeOrganizationId: account.id,
+      },
+    });
+  }
 
-  console.log(account.id)
+  console.log(account.id);
 
-  return account
+  return account;
 
   // if (updatedOrg.id) {
   //   return updatedOrg.id;
@@ -73,14 +79,11 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     },
   });
 
-
   if (!user) throw new Error("User not found");
-
 
   if (user.stripeCustomerId) {
     return user.stripeCustomerId;
   }
-
 
   // create a new customer
   const customer = await stripe.customers.create({
@@ -92,7 +95,6 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     },
   });
 
-
   // update with new customer id
   const updatedUser = await prisma.user.update({
     where: {
@@ -103,12 +105,10 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     },
   });
 
-
   if (updatedUser.stripeCustomerId) {
     return updatedUser.stripeCustomerId;
   }
 };
-
 
 export const handleInvoicePaid = async ({
   event,
@@ -126,7 +126,6 @@ export const handleInvoicePaid = async ({
   );
   const userId = subscription.metadata.userId;
 
-
   // update user with subscription data
   await prisma.user.update({
     where: {
@@ -138,7 +137,6 @@ export const handleInvoicePaid = async ({
     },
   });
 };
-
 
 export const handleSubscriptionCreatedOrUpdated = async ({
   event,
@@ -150,7 +148,6 @@ export const handleSubscriptionCreatedOrUpdated = async ({
   const subscription = event.data.object as Stripe.Subscription;
   const userId = subscription.metadata.userId;
 
-
   // update user with subscription data
   await prisma.user.update({
     where: {
@@ -163,7 +160,6 @@ export const handleSubscriptionCreatedOrUpdated = async ({
   });
 };
 
-
 export const handleSubscriptionCanceled = async ({
   event,
   prisma,
@@ -173,7 +169,6 @@ export const handleSubscriptionCanceled = async ({
 }) => {
   const subscription = event.data.object as Stripe.Subscription;
   const userId = subscription.metadata.userId;
-
 
   // remove subscription data from user
   await prisma.user.update({
