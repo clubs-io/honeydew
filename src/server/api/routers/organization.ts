@@ -129,4 +129,44 @@ export const organizationRouter = createTRPCRouter({
         console.log("error", error);
       }
     }),
+    setCalendarLink: protectedProcedure
+      .input(
+          z.object({
+            org_id: z.string(),
+            calendar_link: z.string(),
+          }),
+      ).mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.organization.update({
+            data: {
+                calendarLink: input.calendar_link
+            },
+            where: {
+                id: input.org_id
+            }
+        })  
+      } catch (error) {
+        console.log("error", error);
+      }
+    }),
+    getCalendarLink: protectedProcedure
+      .input(
+          z.object({
+            org_id: z.string(),
+          }),
+      ).query(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.organization.findFirst({
+          select: {
+            calendarLink: true,
+          },
+          where: {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            id: input.org_id,
+          }
+        });
+      } catch (error) {
+        console.log("error", error);
+      }
+    }),
   });
