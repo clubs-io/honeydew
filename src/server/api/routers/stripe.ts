@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { env } from "../../../env.mjs";
 import { getOrCreateStripeAccountForOrg, getOrCreateStripeCustomerIdForUser } from "../../../server/stripe/stripe-webhook-handlers";
 import { createTRPCRouter, protectedProcedure } from "../../../server/api/trpc";
+import { z } from "zod";
 
 export const stripeRouter = createTRPCRouter({
 
@@ -43,8 +45,13 @@ export const stripeRouter = createTRPCRouter({
   //   return orgId;
 
   // }),
-  createCheckoutSession: protectedProcedure.mutation(async ({ ctx }) => {
+  createCheckoutSession: protectedProcedure.input(
+    z.object({
+      priceAmount: z.number(),
+    }),
+    ).mutation(async ({ ctx, input }) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    console.log(input.priceAmount);
     const { stripe, session, prisma, req } = ctx;
 
     const customerId = await getOrCreateStripeCustomerIdForUser({
@@ -55,13 +62,13 @@ export const stripeRouter = createTRPCRouter({
 
     const product = await stripe.products.create({
       name: "Dues",
-      description: "Some description"
+      description: "Some description",
     })
 
     const price = await stripe.prices.create({
       currency: "usd",
       product: product.id,
-      unit_amount: 200,
+      unit_amount: Number(input.priceAmount)*100,
     })
 
     if (!customerId) {
