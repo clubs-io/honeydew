@@ -191,7 +191,7 @@ const AdminPayments: NextPage = () => {
                       <p className="text-xl text-slate-500">
                         Track and manage your Organization&apos;s Payments
                       </p>
-                      <div>
+                      {/* <div>
                         {!isLoading && subscriptionStatus !== null && (
                           <>
                             <p>Sub: {subscriptionStatus?.stripeSubscriptionStatus}</p>
@@ -206,7 +206,7 @@ const AdminPayments: NextPage = () => {
                             <UpgradeButton />
                           </>
                         )}
-                      </div>
+                      </div> */}
                     </div>
                   ) : (
                     <p>no session data</p>

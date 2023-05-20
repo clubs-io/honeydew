@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { env } from "../../../env.mjs";
 import { getOrCreateStripeAccountForOrg, getOrCreateStripeCustomerIdForUser } from "../../../server/stripe/stripe-webhook-handlers";
 import { createTRPCRouter, protectedProcedure } from "../../../server/api/trpc";
@@ -52,6 +53,17 @@ export const stripeRouter = createTRPCRouter({
       userId: session.user?.id,
     });
 
+    const product = await stripe.products.create({
+      name: "Dues",
+      description: "Some description"
+    })
+
+    const price = await stripe.prices.create({
+      currency: "usd",
+      product: product.id,
+      unit_amount: 200,
+    })
+
     if (!customerId) {
       throw new Error("Could not create customer");
     }
@@ -63,6 +75,8 @@ export const stripeRouter = createTRPCRouter({
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
         : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
 
+    
+
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       client_reference_id: session.user?.id,
@@ -70,7 +84,7 @@ export const stripeRouter = createTRPCRouter({
       mode: "payment",
       line_items: [
         {
-          price: env.STRIPE_PRICE_ID,
+          price: price.id,
           quantity: 1,
         },
       ],

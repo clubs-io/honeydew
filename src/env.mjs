@@ -24,6 +24,7 @@ const server = z.object({
   STRIPE_PK: z.string(),
   STRIPE_SK: z.string(),
   STRIPE_PRICE_ID: z.string(),
+  STRIPE_PROD_ID: z.string(),
   STRIPE_WEBHOOK_SECRET: z.string(),
 });
 
@@ -51,6 +52,7 @@ const processEnv = {
   STRIPE_PK: process.env.STRIPE_PK,
   STRIPE_SK: process.env.STRIPE_SK,
   STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID,
+  STRIPE_PROD_ID: process.env.STRIPE_PROD_ID,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };

@@ -160,6 +160,30 @@ export const handleSubscriptionCreatedOrUpdated = async ({
   });
 };
 
+export const handleCreateProduct = async ({
+  event,
+  prisma,
+}: {
+  event: Stripe.Event;
+  prisma: PrismaClient;
+}) => {
+  const subscription = event.data.object as Stripe.Subscription;
+  const userId = subscription.metadata.userId;
+
+  // remove subscription data from user
+  // create temporary product
+  // or update product id
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      stripeSubscriptionId: null,
+      stripeSubscriptionStatus: null,
+    },
+  });
+};
+
 export const handleSubscriptionCanceled = async ({
   event,
   prisma,
