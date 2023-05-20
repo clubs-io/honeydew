@@ -45,13 +45,18 @@ const updateNavigation = (page: string): NavigationItem[] => {
     },
     {
       name: "Payments",
-      href: "/user/payments",
-      current: page === "user/payments",
+      href: "/admin/payments",
+      current: page === "/admin/payments",
     },
     {
       name: "Members",
-      href: "settings",
-      current: page === "user/payments",
+      href: page.includes("admin") ? "admin/members" : "/users/members",
+      current: page === "/admin/members",
+    },
+    {
+      name: "Calendar",
+      href: page.includes("admin") ? "admin/calendar" : "/users/calendar",
+      current: page === "/admin/calendar",
     },
     // { name: 'Settings', href: '/settings', current: page === 'settings' },
   ];
