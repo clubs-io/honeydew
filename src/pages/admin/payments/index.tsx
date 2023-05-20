@@ -9,8 +9,6 @@ import TailwindNav from "~/components/AdminNav";
 import { Badge, Spinner, Table } from "flowbite-react";
 import { useSession } from "next-auth/react";
 import {
-  ArrowUpIcon,
-  UserPlusIcon,
   PlusIcon,
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";

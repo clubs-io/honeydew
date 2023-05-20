@@ -1,10 +1,10 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { Badge, Table, Spinner } from "flowbite-react";
-import TailwindNav from "~/components/AdminNav";
+// import TailwindNav from "~/components/AdminNav";
+import UserNav from "~/components/UserNav";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
-import { api } from "~/utils/api";
 
 const Dashboard: NextPage = () => {
   const { data: sessionData, status } = useSession();
@@ -17,7 +17,7 @@ const Dashboard: NextPage = () => {
     return (
       <>
         <div className="w-screen h-max flex flex-col dark:bg-slate-900">
-          <TailwindNav currentPage={"user"} />
+          <UserNav currentPage={"user"} />
           <main className="w-screen flex justify-center min-h-screen flex-row bg-slate-50 dark:bg-slate-700">
             <div className="mt-12 mx-16 container gap-12 max-w-7xl">
               <div className="w-full h-full">

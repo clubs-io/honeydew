@@ -7,7 +7,8 @@ import Image from "next/image";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "../../../utils/api";
-import TailwindNav from "~/components/AdminNav";
+// import TailwindNav from "~/components/AdminNav";
+import UserNav from "~/components/UserNav";
 import { Badge, Spinner, Table } from "flowbite-react";
 import { useSession } from "next-auth/react";
 import {
@@ -162,7 +163,7 @@ const AdminPayments: NextPage = () => {
     return (
       <>
         <div className="flex h-max w-screen flex-col dark:bg-slate-900">
-          <TailwindNav currentPage={"admin"} />
+          <UserNav currentPage={"payments"} />
           <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-700">
             <div className="container mx-16 mt-12 max-w-7xl gap-12">
               <div className="h-full w-full">
