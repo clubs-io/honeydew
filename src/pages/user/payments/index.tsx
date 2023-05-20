@@ -338,7 +338,7 @@ const AdminPayments: NextPage = () => {
                       onClick={() => setOpen(true)}
                     >
                       <PlusIcon className="mr-2 h-6 w-6" />
-                      Create Payment Request
+                      Fulfill a Payment Request
                     </button>
                   </div>
 
@@ -417,11 +417,11 @@ const AdminPayments: NextPage = () => {
                                 as="h3"
                                 className="text-base font-semibold leading-6 text-gray-900"
                               >
-                                Payment Request Form
+                                Fulfill Request Form
                               </Dialog.Title>
                               <div className="mt-2">
                                 <p className="text-sm text-gray-500">
-                                  Create a payment request from a user.
+                                  Pick which request to fulfill
                                 </p>
                                 <Select
                                   defaultValue={""}
@@ -448,7 +448,7 @@ const AdminPayments: NextPage = () => {
                             className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
                             onClick={() => setOpen(false)}
                           >
-                            Invite
+                            Pay
                           </button>
                           <button
                             type="button"
