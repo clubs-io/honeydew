@@ -24,8 +24,8 @@ const Members: NextPage = () => {
                     <Table.Head>
                       <Table.HeadCell>Name</Table.HeadCell>
                       <Table.HeadCell>Email</Table.HeadCell>
-                      <Table.HeadCell>Due Date</Table.HeadCell>
                       <Table.HeadCell>Status</Table.HeadCell>
+                      <Table.HeadCell>Actions</Table.HeadCell>
                       <Table.HeadCell>
                         <span className="sr-only">Edit</span>
                       </Table.HeadCell>
@@ -36,13 +36,14 @@ const Members: NextPage = () => {
                           Sid
                         </Table.Cell>
                         <Table.Cell>xyz@gmail.com</Table.Cell>
-                        <Table.Cell>Tomorrow</Table.Cell>
-                        <Table.Cell className="flex flex-row gap-2">
-                          <Badge className="w-fit" color="success">
+                        <Table.Cell>
+                        <Badge className="w-fit" color="success">
                             Active
                           </Badge>
                         </Table.Cell>
-                        <Table.Cell></Table.Cell>
+                        <Table.Cell className="flex flex-row gap-2">
+                          Cool
+                        </Table.Cell>
                       </Table.Row>
                     </Table.Body>
                   </Table>
