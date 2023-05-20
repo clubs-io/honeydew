@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { Badge, Table, Spinner } from "flowbite-react";
-import TailwindNav from "~/components/TailwindNav";
+import TailwindNav from "~/components/AdminNav";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 
@@ -16,7 +16,7 @@ const Calendar: NextPage = () => {
     return (
       <>
         <div className="flex h-max w-screen flex-col dark:bg-slate-900">
-          <TailwindNav currentPage={"calendars"} />
+          <TailwindNav currentPage={"calendar"} />
           <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-700">
           Calendar
 

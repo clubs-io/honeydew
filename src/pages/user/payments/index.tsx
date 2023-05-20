@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { api } from "../../../utils/api";
-import TailwindNav from "~/components/TailwindNav";
+import TailwindNav from "~/components/AdminNav";
 import { Badge, Spinner, Table } from "flowbite-react";
 import { useSession } from "next-auth/react";
 import {

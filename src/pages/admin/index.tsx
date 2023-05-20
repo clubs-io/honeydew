@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { Badge, Table, Spinner } from "flowbite-react";
-import TailwindNav from "~/components/TailwindNav";
+import TailwindNav from "~/components/AdminNav";
 import { useRouter } from "next/router";
 import {
   ArrowUpIcon,
