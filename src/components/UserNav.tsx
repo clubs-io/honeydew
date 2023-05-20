@@ -39,29 +39,18 @@ const updateNavigation = (page: string): NavigationItem[] => {
   return [
     {
       name: "Dashboard",
-      href: "/",
+      href: "/user",
       current: page === "admin" || page === "user",
     },
     {
       name: "Payments",
-      href: "/admin/payments",
-      current: page === "/admin/payments",
+      href: "/user/payments",
+      current: page === "payments",
     },
-    {
-      name: "Members",
-      href: page.includes("admin") ? "admin/members" : "/users/members",
-      current: page === "/admin/members",
-    },
-    {
-      name: "Calendar",
-      href: page.includes("admin") ? "admin/calendar" : "/users/calendar",
-      current: page === "/admin/calendar",
-    },
-    // { name: 'Settings', href: '/settings', current: page === 'settings' },
   ];
 };
 
-export default function TailwindNav({ currentPage }: NavProps) {
+export default function UserNav({ currentPage }: NavProps) {
   const navigation: NavigationItem[] = updateNavigation(currentPage);
   const { data: sessionData } = useSession();
 
