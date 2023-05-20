@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { type NextPage } from "next";
 import Head from "next/head";
@@ -16,13 +18,13 @@ import {
 import { Transition, Dialog } from "@headlessui/react";
 import Select from "react-select";
 
-const UpgradeButton = () => {
+const FulFillPayment = () => {
   const { mutateAsync: createCheckoutSession } =
     api.stripe.createCheckoutSession.useMutation();
   const { push } = useRouter();
   return (
     <button
-      className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
+      className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
       onClick={async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { checkoutUrl } = await createCheckoutSession();
@@ -31,10 +33,11 @@ const UpgradeButton = () => {
         }
       }}
     >
-      Upgrade account
+      Pay
     </button>
   );
 };
+
 
 const ManageBillingButton = () => {
   const { mutateAsync: createBillingPortalSession } =
@@ -95,12 +98,23 @@ const AdminPayments: NextPage = () => {
         : null,
     });
 
+  // const fulFillPayment = async () => {
+  //   const { mutateAsync: createCheckoutSession } =
+  //     api.stripe.createCheckoutSession.useMutation();
+  //     const { push } = useRouter();
+  //     const { checkoutUrl } = await createCheckoutSession();
+  //     if (checkoutUrl) {
+  //       void push(checkoutUrl);
+  //     }
+  //   };
+    
+  const handleAfterPayment = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    // console.log("Got Called");
+  };
+
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
-
-  const fulfillPaymentRequest = () => {
-    // TODO: Complete fulfill payment request
-  };
 
   const { push } = useRouter();
   // const { data: subscriptionStatus, isLoading, isError } = api.user.subscriptionStatus.useQuery();
@@ -150,35 +164,6 @@ const AdminPayments: NextPage = () => {
               <div className="h-full w-full">
                 {/* Header */}
                 <div className="flex flex-col justify-between sm:flex-row">
-                  {/* {sessionData ?
-                                    <div>
-                                    <h1 className="text-4xl font-medium text-slate-800 dark:text-slate-100 sm:block">
-                                        Welcome back, {sessionData.user?.name}
-                                    </h1>
-                                    <p className="text-xl text-slate-500">Track and manage your Organization&apos;s Payments</p>
-                                    <div>
-                                    {!isLoading && subscriptionStatus !== null && (
-                                        <>
-                                        <ManageBillingButton />
-                                        </>
-                                    )}
-                                    {!isLoading && subscriptionStatus === null && (
-                                        <>
-                                        <p className="text-xl text-gray-700">You are not subscribed!!!</p>
-                                        <UpgradeButton />
-                                        </>
-                                    )}
-                                </div>
-                                    </div>
-                                    : <p>no session data</p>
-                                } */}
-                  {/*<div className="">
-                                    <button type="button" className="flex py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                    <ArrowUpTrayIcon className="w-5 h-5 mr-2" />
-                                    Import
-                                    </button>
-                                </div>
-                                */}
                 </div>
                 {/* KPI Charts */}
                 <div className="mt-8 flex flex-col items-center justify-between gap-4 sm:flex-row">
@@ -403,7 +388,7 @@ const AdminPayments: NextPage = () => {
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                   >
                     <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                      <form className="" onSubmit={fulfillPaymentRequest}>
+                      <form className="" onSubmit={(handleAfterPayment)}>
                         <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                           <div className="sm:flex sm:items-start">
                             <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -443,13 +428,14 @@ const AdminPayments: NextPage = () => {
                           </div>
                         </div>
                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                          <button
+                          <FulFillPayment></FulFillPayment>
+                          {/* <button
                             type="submit"
                             className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
                             onClick={() => setOpen(false)}
                           >
                             Pay
-                          </button>
+                          </button> */}
                           <button
                             type="button"
                             className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
