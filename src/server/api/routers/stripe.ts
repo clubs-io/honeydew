@@ -67,20 +67,15 @@ export const stripeRouter = createTRPCRouter({
       customer: customerId,
       client_reference_id: session.user?.id,
       payment_method_types: ["card"],
-      mode: "subscription",
+      mode: "payment",
       line_items: [
         {
           price: env.STRIPE_PRICE_ID,
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/dashboard?checkoutSuccess=true`,
-      cancel_url: `${baseUrl}/dashboard?checkoutCanceled=true`,
-      subscription_data: {
-        metadata: {
-          userId: session.user?.id,
-        },
-      },
+      success_url: `${baseUrl}/user/payments`,
+      cancel_url: `${baseUrl}/user`,
     });
 
     if (!checkoutSession) {

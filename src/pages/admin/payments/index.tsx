@@ -143,6 +143,7 @@ const AdminPayments: NextPage = () => {
     isLoading,
     isError,
   } = api.user.subscriptionStatus.useQuery();
+  // console.log()
   //type Option = { value: string; label: string };
 
   // eslint-disable-next-line prefer-const
@@ -193,7 +194,8 @@ const AdminPayments: NextPage = () => {
                       <div>
                         {!isLoading && subscriptionStatus !== null && (
                           <>
-                            <ManageBillingButton />
+                            <p>Sub: {subscriptionStatus?.stripeSubscriptionStatus}</p>
+                            <UpgradeButton />
                           </>
                         )}
                         {!isLoading && subscriptionStatus === null && (
