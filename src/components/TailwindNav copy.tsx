@@ -50,14 +50,15 @@ const updateNavigation = (page: string): NavigationItem[] => {
     },
     {
       name: "Members",
-      href: "/admin/members",
+      href: page.includes("admin") ? "admin/members" : "/users/members",
       current: page === "/admin/members",
     },
     {
       name: "Calendar",
-      href: "/admin/calendar",
+      href: page.includes("admin") ? "admin/calendar" : "/users/calendar",
       current: page === "/admin/calendar",
     },
+    // { name: 'Settings', href: '/settings', current: page === 'settings' },
   ];
 };
 

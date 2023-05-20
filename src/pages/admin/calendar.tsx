@@ -16,7 +16,7 @@ const Calendar: NextPage = () => {
     return (
       <>
         <div className="flex h-max w-screen flex-col dark:bg-slate-900">
-          <TailwindNav currentPage={"admin/members"} />
+          <TailwindNav currentPage={"calendars"} />
           <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-700">
           Calendar
 

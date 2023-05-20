@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { Badge, Table, Spinner } from "flowbite-react";
 import TailwindNav from "~/components/TailwindNav";
-import { ArrowUpIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
 
 const Members: NextPage = () => {
@@ -16,7 +15,7 @@ const Members: NextPage = () => {
     return (
       <>
         <div className="flex h-max w-screen flex-col dark:bg-slate-900">
-          <TailwindNav currentPage={"admin/members"} />
+          <TailwindNav currentPage={"members"} />
           <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-700">
           <div className="mb-8 mt-8">
                   <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">
