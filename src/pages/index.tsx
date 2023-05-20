@@ -94,7 +94,6 @@ const Home: NextPage = () => {
                     className="mt-8 w-full rounded-lg border p-4"
                   />
                   <button className="mb-2 mr-2 mt-3 w-full rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300">
-                    {/* Create Company Profile */}
                     Continue
                   </button>
                 </form>
@@ -106,7 +105,7 @@ const Home: NextPage = () => {
         <div className="">
           <MarketingNavBar />
           <HeroBanner />
-          <CTA />
+          {/* <CTA /> */}
           <Footer />
           {/* <button
             className="text-lg font-bold text-blue-500 no-underline "
