@@ -4,17 +4,13 @@
 import { type NextPage } from "next";
 import { Fragment, useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { api } from "../../../utils/api";
+import { api } from "../../utils/api";
 import TailwindNav from "~/components/AdminNav";
 import { Badge, Spinner, Table } from "flowbite-react";
 import { useSession } from "next-auth/react";
-import {
-  PlusIcon,
-  CurrencyDollarIcon,
-} from "@heroicons/react/24/outline";
+import { PlusIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import Select from "react-select";
-
 
 const CreatePaymentButton = () => {
   // const { mutateAsync: createCheckoutSession } =
@@ -36,24 +32,24 @@ const CreatePaymentButton = () => {
   );
 };
 
-const ManageBillingButton = () => {
-  const { mutateAsync: createBillingPortalSession } =
-    api.stripe.createBillingPortalSession.useMutation();
-  const { push } = useRouter();
-  return (
-    <button
-      className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
-      onClick={async () => {
-        const { billingPortalUrl } = await createBillingPortalSession();
-        if (billingPortalUrl) {
-          void push(billingPortalUrl);
-        }
-      }}
-    >
-      Manage subscription and billing
-    </button>
-  );
-};
+// const ManageBillingButton = () => {
+//   const { mutateAsync: createBillingPortalSession } =
+//     api.stripe.createBillingPortalSession.useMutation();
+//   const { push } = useRouter();
+//   return (
+//     <button
+//       className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
+//       onClick={async () => {
+//         const { billingPortalUrl } = await createBillingPortalSession();
+//         if (billingPortalUrl) {
+//           void push(billingPortalUrl);
+//         }
+//       }}
+//     >
+//       Manage subscription and billing
+//     </button>
+//   );
+// };
 
 const AdminPayments: NextPage = () => {
   const { data: sessionData, status } = useSession();
@@ -199,38 +195,7 @@ const AdminPayments: NextPage = () => {
                   </div>
                 </div>
                 {/* Table */}
-                <div className="mb-8 mt-8">
-                  <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">
-                    Upcoming Dues
-                  </h1>
-
-                  <Table hoverable={true} className="">
-                    <Table.Head>
-                      <Table.HeadCell>Name</Table.HeadCell>
-                      <Table.HeadCell>Amount</Table.HeadCell>
-                      <Table.HeadCell>Due Date</Table.HeadCell>
-                      <Table.HeadCell>Status</Table.HeadCell>
-                      <Table.HeadCell>
-                        <span className="sr-only">Edit</span>
-                      </Table.HeadCell>
-                    </Table.Head>
-                    <Table.Body className="divide-y">
-                      <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                        <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                          Sid
-                        </Table.Cell>
-                        <Table.Cell>$200</Table.Cell>
-                        <Table.Cell>Tomorrow</Table.Cell>
-                        <Table.Cell className="flex flex-row gap-2">
-                          <Badge className="w-fit" color="success">
-                            Active
-                          </Badge>
-                        </Table.Cell>
-                        <Table.Cell></Table.Cell>
-                      </Table.Row>
-                    </Table.Body>
-                  </Table>
-                </div>
+                <div className="mb-8 mt-8"></div>
               </div>
             </div>
           </main>
@@ -274,7 +239,7 @@ const AdminPayments: NextPage = () => {
                                 aria-hidden="true"
                               />
                             </div>
-                            <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left w-full">
+                            <div className="mt-3 w-full text-center sm:ml-4 sm:mt-0 sm:text-left">
                               <div>
                                 <Dialog.Title
                                   as="h3"
@@ -344,7 +309,7 @@ const AdminPayments: NextPage = () => {
                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                           <button
                             type="submit"
-                            className="px-10 inline-flex w-full justify-center rounded-md bg-blue-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
+                            className="inline-flex w-full justify-center rounded-md bg-blue-600 px-10 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
                             onClick={() => setOpen(false)}
                           >
                             Create
