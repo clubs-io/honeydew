@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -13,6 +15,29 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { api } from "~/utils/api";
+import { DataTable } from "~/components/data-table";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import { type ColumnDef } from "@tanstack/react-table";
+import {
+  PlusIcon,
+  CurrencyDollarIcon,
+  ArrowsUpDownIcon,
+} from "@heroicons/react/24/outline";
+
+const statusColorMap: { [key: string]: string } = {
+  OVERDUE: "bg-yellow-50 text-yellow-800",
+  PENDING: "bg-sky-50 text-sky-700",
+  COMPLETED: "bg-green-50 text-green-600",
+  REJECTED: "bg-red-50 text-red-700",
+};
 
 const Dashboard: NextPage = () => {
   const { data: sessionData, status } = useSession();
@@ -36,6 +61,117 @@ const Dashboard: NextPage = () => {
         ? currentUserOrganization.data?.organizationId
         : ""
     );
+  
+    const columns: ColumnDef<PaymentRequest>[] = [
+      {
+        accessorKey: "userId",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Name
+              <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const userId = row.getValue("userId");
+          const userName = orgMembers?.find((member) => member.id === userId)?.name;
+          return (
+            <div className="flex items-center">
+              {userName}
+              </div>
+          )
+    
+        },
+      },
+      {
+        accessorKey: "dueBy",
+        header: "Due by",
+        cell: ({ row }) => {
+          const dueDate: Date = row.getValue("dueBy");
+          const formatted = dueDate.toLocaleDateString(
+            "en-US",
+            {
+              month: "short",
+              day: "numeric",
+            },
+          );
+    
+          return <div className="font-medium">{formatted}</div>;
+        },
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => {
+          const status: string = row.getValue("status");
+          const colorClass: string =
+            statusColorMap[status] || "bg-gray-50 text-gray-600"; // Fallback color
+    
+          return (
+            <span
+              className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${colorClass}`}
+            >
+              {status}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: "amount",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              <ArrowsUpDownIcon className="mr-2 h-4 w-4" />
+              Amount
+            </Button>
+          );
+        },
+        cell: ({ row }) => {
+          const amount = parseFloat(row.getValue("amount"));
+          const formatted = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+          }).format(amount);
+    
+          return <div className="font-medium">{formatted}</div>;
+        },
+      },
+      {
+        id: "actions",
+        cell: ({ row }) => {
+          const payment = row.original;
+    
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <EllipsisVerticalIcon className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => navigator.clipboard.writeText(payment.id)}
+                >
+                  Copy payment ID
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>View customer</DropdownMenuItem>
+                <DropdownMenuItem>View payment details</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        },
+      },
+    ];
 
   if (status === "unauthenticated") {
     void router.push("/");
@@ -135,32 +271,9 @@ const Dashboard: NextPage = () => {
                   <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">
                     Upcoming Dues
                   </h1>
-                  <Table hoverable={true} className="">
-                    <Table.Head>
-                      <Table.HeadCell>Name</Table.HeadCell>
-                      <Table.HeadCell>Amount</Table.HeadCell>
-                      <Table.HeadCell>Due Date</Table.HeadCell>
-                      <Table.HeadCell>Status</Table.HeadCell>
-                      <Table.HeadCell>
-                        <span className="sr-only">Edit</span>
-                      </Table.HeadCell>
-                    </Table.Head>
-                    <Table.Body className="divide-y">
-                      <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                        <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                          Sid
-                        </Table.Cell>
-                        <Table.Cell>$200</Table.Cell>
-                        <Table.Cell>Tomorrow</Table.Cell>
-                        <Table.Cell className="flex flex-row gap-2">
-                          <Badge className="w-fit" color="success">
-                            Active
-                          </Badge>
-                        </Table.Cell>
-                        <Table.Cell></Table.Cell>
-                      </Table.Row>
-                    </Table.Body>
-                  </Table>
+                  <div className="mb-8 mt-8">
+                    <DataTable columns={columns} data={paymentRequests?.paymentRequest ?? []} />
+                  </div>
                 </div>
               </div>
             </div>
