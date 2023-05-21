@@ -101,13 +101,6 @@ export default function UserNav({ currentPage }: NavProps) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <button
-                  type="button"
-                  className="rounded-full bg-slate-200 p-1 text-slate-800 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 dark:bg-slate-700 dark:text-slate-200"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
