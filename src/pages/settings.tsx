@@ -124,135 +124,10 @@ const Settings: NextPage = () => {
                 Settings
               </h1>
               <Tabs.Group aria-label="Tabs with underline" style="underline">
-                <Tabs.Item title="Members">
-                  <div className="flex justify-between">
-                    <div>
-                      <h1 className="text-2xl text-slate-900 dark:text-slate-100">
-                        Team members
-                      </h1>
-                      <p className="text-lg text-slate-500">
-                        Manage your organization&apos;s members and account
-                        permissions here.
-                      </p>
-                    </div>
-                    <div>
-                      <button
-                        type="button"
-                        className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                        onClick={() => setOpen(true)}
-                      >
-                        <PlusIcon className="mr-2 h-6 w-6" />
-                        Add team member
-                      </button>
-                    </div>
-                  </div>
-                  <hr className="my-8 h-px border-0 bg-gray-200 dark:bg-gray-700" />
-                  <div className="flex w-full flex-row">
-                    <h1 className="w-60 font-semibold text-slate-500">
-                      Active
-                    </h1>
-                    <table className="w-full max-w-xl text-left text-sm text-gray-500 dark:text-gray-400">
-                      <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                          <th scope="col" className="px-6 py-3">
-                            Name
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Role
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orgMembers &&
-                          orgMembers?.map(
-                            (member: {
-                              id: Key | null | undefined;
-                              name:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<
-                                    any,
-                                    string | JSXElementConstructor<any>
-                                  >
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              role:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<
-                                    any,
-                                    string | JSXElementConstructor<any>
-                                  >
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                            }) => {
-                              return (
-                                <tr
-                                  key={member.id}
-                                  className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
-                                >
-                                  <th
-                                    scope="row"
-                                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                                  >
-                                    {member.name}
-                                  </th>
-                                  <td>{member.role}</td>
-                                </tr>
-                              );
-                            }
-                          )}
-                      </tbody>
-                    </table>
-                  </div>
-                  <hr className="my-8 h-px border-0 bg-gray-200 dark:bg-gray-700" />
-                  <div className="flex w-full flex-row">
-                    <h1 className="w-60 font-semibold text-slate-500">
-                      Invites
-                    </h1>
-                    <table className="w-full max-w-xl text-left text-sm text-gray-500 dark:text-gray-400">
-                      <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                          <th scope="col" className="px-6 py-3">
-                            Email
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orgInvites &&
-                          orgInvites?.map((invite) => {
-                            return (
-                              <tr
-                                key={invite.id}
-                                className="border-b bg-white dark:border-gray-700 dark:bg-gray-800"
-                              >
-                                <th
-                                  scope="row"
-                                  className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                                >
-                                  {invite.email}
-                                </th>
-                                <td>{invite.status}</td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  </div>
-                </Tabs.Item>
-                <Tabs.Item title="Other">
-                  <h1 className="text-2xl text-slate-900">Other settings</h1>
+                <Tabs.Item title="Stripe">
+                  <h1 className="text-2xl text-slate-900">Stripe settings</h1>
                   <p className="text-lg text-slate-500">
-                    Manage your other settings
+                    Connect your Stripe account
                   </p>
                   <div>
                     {!isLoading &&
@@ -267,7 +142,7 @@ const Settings: NextPage = () => {
                         ?.stripeOrganizationId !== null && (
                         <>
                           <p className="text-xl text-gray-700">
-                            Stripe Account Connected{" "}
+                            Stripe ID:{" "}
                             {
                               currentUserOrganizationStripeAccount.data
                                 ?.stripeOrganizationId
