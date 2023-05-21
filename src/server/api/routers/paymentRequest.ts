@@ -12,6 +12,7 @@ export const paymentRequestRouter = createTRPCRouter({
         organization_id: z.string(),
         amount: z.number(),
         due_by: z.nullable(z.date()),
+        description: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -19,9 +20,10 @@ import Select from "react-select";
 
 type MyComponentProps = {
   paymentAmount: number;
+  description: string;
 };
 
-const FulFillPayment: React.FC<MyComponentProps> = ({ paymentAmount }) => {
+const FulFillPayment: React.FC<MyComponentProps> = ({ paymentAmount, description }) => {
   const { push } = useRouter();
   const { mutateAsync: createCheckoutSession } = api.stripe.createCheckoutSession.useMutation();
   
@@ -31,7 +33,7 @@ const FulFillPayment: React.FC<MyComponentProps> = ({ paymentAmount }) => {
       className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
       onClick={async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { checkoutUrl } = await createCheckoutSession({priceAmount: Number(paymentAmount)});
+        const { checkoutUrl } = await createCheckoutSession({priceAmount: Number(paymentAmount), description: String(description)});
         if (checkoutUrl) {
           void push(checkoutUrl);
         }
@@ -45,9 +47,8 @@ const FulFillPayment: React.FC<MyComponentProps> = ({ paymentAmount }) => {
 const Dashboard: NextPage = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter();
-  const [paymentIdValue, setPaymentIdValue] = useState("");
   const [paymentAmountValue, setPaymentAmountValue] = useState("");
-  const [paymentDate, setPaymentDate] = useState("");
+  const [paymentDescription, setPaymentDescription] = useState("");
   const { data: paymentRequests } = api.user?.getUserPaymentRequests.useQuery(
     sessionData?.user.id ? sessionData?.user.id : ""
   );
@@ -67,8 +68,8 @@ const Dashboard: NextPage = () => {
         // { value: 'chocolate', label: 'Chocolate' }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
         options.push({
-          value: paymentRequests.paymentRequests[i]?.id ?? "",
-          label: paymentRequests.paymentRequests[i]?.amount ?? "",
+          label: paymentRequests.paymentRequests[i]?.description ?? "",
+          value: paymentRequests.paymentRequests[i]?.amount ?? "",
         });
       }
       console.log(options);
@@ -443,7 +444,8 @@ const Dashboard: NextPage = () => {
                                   onChange={
                                     (e: any) =>{
                                       //eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                                      setPaymentAmountValue(e.label);
+                                      setPaymentAmountValue(e.value);
+                                      setPaymentDescription(e.label);
                                       // console.log(e.label);
                                       // console.log(paymentAmountValue);
                                     }
@@ -454,7 +456,7 @@ const Dashboard: NextPage = () => {
                           </div>
                         </div>
                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                          <FulFillPayment paymentAmount={Number(paymentAmountValue)}></FulFillPayment>
+                          <FulFillPayment paymentAmount={Number(paymentAmountValue)} description={String(paymentDescription)}></FulFillPayment>
                           {/* <button
                             type="submit"
                             className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"

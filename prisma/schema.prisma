@@ -134,7 +134,8 @@ model PaymentRequest {
   amount         Float
   amountPending  Float
   status         PaymentRequestStatus @default(PENDING)
-  dueBy          DateTime
+  dueBy          DateTime             
+  description    String               @default("Dues")
 }
 
 model InvitationEmailSends {

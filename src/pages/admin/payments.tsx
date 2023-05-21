@@ -200,6 +200,7 @@ const AdminPayments: NextPage = () => {
         : "",
       amount: +paymentAmountValue,
       due_by: paymentDate,
+      description: paymentDescription,
     });
   };
 

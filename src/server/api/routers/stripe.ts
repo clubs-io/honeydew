@@ -48,6 +48,7 @@ export const stripeRouter = createTRPCRouter({
   createCheckoutSession: protectedProcedure.input(
     z.object({
       priceAmount: z.number(),
+      description: z.string(),
     }),
     ).mutation(async ({ ctx, input }) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -61,8 +62,8 @@ export const stripeRouter = createTRPCRouter({
     });
 
     const product = await stripe.products.create({
-      name: "Dues",
-      description: "Some description",
+      name: "Honeydew Product",
+      description: input.description,
     })
 
     const price = await stripe.prices.create({
