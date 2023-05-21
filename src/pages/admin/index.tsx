@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { Badge, Table, Spinner } from "flowbite-react";
@@ -11,10 +12,23 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { api } from "~/utils/api";
 
 const Dashboard: NextPage = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter();
+
+  const currentUserOrganization = api.user?.getUserOrganization.useQuery(
+    sessionData?.user.id ? sessionData?.user.id : ""
+  );
+
+  const { data: orgMembers, isLoading } =
+    api.organization?.getOrganizationUsers.useQuery({
+      user_id: sessionData?.user.id ? sessionData?.user.id : "",
+      organization_id: currentUserOrganization.data?.organizationId
+        ? currentUserOrganization.data?.organizationId
+        : null,
+    });
 
   if (status === "unauthenticated") {
     void router.push("/");
@@ -65,7 +79,7 @@ const Dashboard: NextPage = () => {
                       <h3 className="text-gray-600">No. Members</h3>
                       <div className="flex w-full flex-row items-center justify-between">
                         <span className="text-4xl font-semibold text-gray-800">
-                          100
+                          {orgMembers.length}
                         </span>
                         <div className="flex flex-row items-center justify-center gap-2 rounded-full border border-gray-800 px-2">
                           <ArrowUpIcon className="h-4 w-4 text-gray-600" />
