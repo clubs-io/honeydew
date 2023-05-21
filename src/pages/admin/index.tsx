@@ -30,6 +30,13 @@ const Dashboard: NextPage = () => {
         : null,
     });
 
+  const { data: paymentRequests } =
+    api.paymentRequest.getAllOrgPaymentRequests.useQuery(
+      currentUserOrganization.data?.organizationId
+        ? currentUserOrganization.data?.organizationId
+        : ""
+    );
+
   if (status === "unauthenticated") {
     void router.push("/");
   }
@@ -79,12 +86,8 @@ const Dashboard: NextPage = () => {
                       <h3 className="text-gray-600">No. Members</h3>
                       <div className="flex w-full flex-row items-center justify-between">
                         <span className="text-4xl font-semibold text-gray-800">
-                          {orgMembers.length}
+                          {orgMembers?.length ?? "1"}
                         </span>
-                        <div className="flex flex-row items-center justify-center gap-2 rounded-full border border-gray-800 px-2">
-                          <ArrowUpIcon className="h-4 w-4 text-gray-600" />
-                          <span color="gray">20%</span>
-                        </div>
                       </div>
                     </div>
                   </Link>
@@ -96,15 +99,13 @@ const Dashboard: NextPage = () => {
                       <EllipsisVerticalIcon className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-gray-600">Due collected</h3>
+                      <h3 className="text-gray-600">Dues requested</h3>
                       <div className="flex w-full flex-row items-center justify-between">
                         <span className="text-4xl font-semibold text-gray-800">
-                          $3,100
+                          ${paymentRequests?.paymentRequest ? 
+                          paymentRequests?.paymentRequest.reduce((sum, obj) => sum + obj.amount, 0)
+                           : "-"}
                         </span>
-                        <div className="flex flex-row items-center justify-center gap-2 rounded-full border border-gray-800 px-2">
-                          <ArrowUpIcon className="h-4 w-4 text-gray-600" />
-                          <span color="gray">20%</span>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -116,15 +117,15 @@ const Dashboard: NextPage = () => {
                       <EllipsisVerticalIcon className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-gray-600">Due collected</h3>
+                      <h3 className="text-gray-600">Dues collected</h3>
                       <div className="flex w-full flex-row items-center justify-between">
                         <span className="text-4xl font-semibold text-gray-800">
-                          $3,100
+                          ${paymentRequests?.paymentRequest ? 
+                          paymentRequests?.paymentRequest
+                          .filter(obj => obj.status === "COMPLETED")
+                          .reduce((sum, obj) => sum + obj.amount, 0)
+                          : "-"}
                         </span>
-                        <div className="flex flex-row items-center justify-center gap-2 rounded-full border border-gray-800 px-2">
-                          <ArrowUpIcon className="h-4 w-4 text-gray-600" />
-                          <span color="gray">20%</span>
-                        </div>
                       </div>
                     </div>
                   </div>
