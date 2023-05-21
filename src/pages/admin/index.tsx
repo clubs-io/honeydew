@@ -31,6 +31,7 @@ import {
   CurrencyDollarIcon,
   ArrowsUpDownIcon,
 } from "@heroicons/react/24/outline";
+import { type PaymentRequest } from "@prisma/client";
 
 const statusColorMap: { [key: string]: string } = {
   OVERDUE: "bg-yellow-50 text-yellow-800",
@@ -269,7 +270,7 @@ const Dashboard: NextPage = () => {
                 {/* Table */}
                 <div className="mb-8 mt-8">
                   <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">
-                    Upcoming Dues
+                    Upcoming Payment Requests
                   </h1>
                   <div className="mb-8 mt-8">
                     <DataTable columns={columns} data={paymentRequests?.paymentRequest ?? []} />
