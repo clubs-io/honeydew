@@ -17,7 +17,7 @@ import {
 import { Dialog, Transition } from "@headlessui/react";
 import Select from "react-select";
 import { type ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "./data-table";
+import { DataTable } from "~/components/data-table";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
