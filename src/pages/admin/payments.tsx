@@ -30,112 +30,13 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type PaymentRequest } from "@prisma/client";
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-// export type Payment = {
-//   id: string;
-//   amount: number;
-//   name: string;
-//   status: "pending" | "processing" | "success" | "failed";
-// };
+
 const statusColorMap: { [key: string]: string } = {
-  pending: "bg-yellow-50 text-yellow-800",
-  processing: "bg-sky-50 text-sky-700",
-  success: "bg-green-50 text-green-600",
-  failed: "bg-red-50 text-red-700",
+  OVERDUE: "bg-yellow-50 text-yellow-800",
+  PENDING: "bg-sky-50 text-sky-700",
+  COMPLETED: "bg-green-50 text-green-600",
+  REJECTED: "bg-red-50 text-red-700",
 };
-export const columns: ColumnDef<PaymentRequest>[] = [
-  {
-    accessorKey: "id",
-    header: "Id",
-  },
-  {
-    accessorKey: "dueBy",
-    header: "Due by",
-  },
-  {
-    accessorKey: "userId",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status: string = row.getValue("status");
-      const colorClass: string =
-        statusColorMap[status] || "bg-gray-50 text-gray-600"; // Fallback color
-
-      return (
-        <span
-          className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${colorClass}`}
-        >
-          {status}
-        </span>
-      );
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          <ArrowsUpDownIcon className="mr-2 h-4 w-4" />
-          Amount
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="font-medium">{formatted}</div>;
-    },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <EllipsisVerticalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
 
 
 const AdminPayments: NextPage = () => {
@@ -223,7 +124,116 @@ const AdminPayments: NextPage = () => {
       console.log(options);
     }
   }, [options, orgMembers]);
-  console.log(options);
+const columns: ColumnDef<PaymentRequest>[] = [
+  {
+    accessorKey: "userId",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const userId = row.getValue("userId");
+      const userName = orgMembers?.find((member) => member.id === userId)?.name;
+      return (
+        <div className="flex items-center">
+          {userName}
+          </div>
+      )
+
+    },
+  },
+  {
+    accessorKey: "dueBy",
+    header: "Due by",
+    cell: ({ row }) => {
+      const dueDate: Date = row.getValue("dueBy");
+      const formatted = dueDate.toLocaleDateString(
+        "en-US",
+        {
+          month: "short",
+          day: "numeric",
+        },
+      );
+
+      return <div className="font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status: string = row.getValue("status");
+      const colorClass: string =
+        statusColorMap[status] || "bg-gray-50 text-gray-600"; // Fallback color
+
+      return (
+        <span
+          className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${colorClass}`}
+        >
+          {status}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <ArrowsUpDownIcon className="mr-2 h-4 w-4" />
+          Amount
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amount"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div className="font-medium">{formatted}</div>;
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const payment = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <EllipsisVerticalIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(payment.id)}
+            >
+              Copy payment ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem>View payment details</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+];
   if (isLoading) {
     return <div>Loading</div>;
   }
