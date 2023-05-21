@@ -42,11 +42,11 @@ const updateNavigation = (page: string): NavigationItem[] => {
       href: "/user",
       current: page === "admin" || page === "user",
     },
-    {
-      name: "Payments",
-      href: "/user/payments",
-      current: page === "payments",
-    },
+    // {
+    //   name: "Payments",
+    //   href: "/user/payments",
+    //   current: page === "payments",
+    // },
   ];
 };
 
