@@ -6,7 +6,7 @@
 import { type NextPage } from "next";
 import { Fragment, useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { api } from "../../../utils/api";
+import { api } from "../../utils/api";
 import TailwindNav from "~/components/AdminNav";
 import { Spinner } from "flowbite-react";
 import { useSession } from "next-auth/react";
@@ -29,24 +29,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-
+import { type PaymentRequest } from "@prisma/client";
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
-  id: string;
-  amount: number;
-  name: string;
-  status: "pending" | "processing" | "success" | "failed";
-};
+// export type Payment = {
+//   id: string;
+//   amount: number;
+//   name: string;
+//   status: "pending" | "processing" | "success" | "failed";
+// };
 const statusColorMap: { [key: string]: string } = {
   pending: "bg-yellow-50 text-yellow-800",
   processing: "bg-sky-50 text-sky-700",
   success: "bg-green-50 text-green-600",
   failed: "bg-red-50 text-red-700",
 };
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<PaymentRequest>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "id",
+    header: "Id",
+  },
+  {
+    accessorKey: "dueBy",
+    header: "Due by",
+  },
+  {
+    accessorKey: "userId",
     header: ({ column }) => {
       return (
         <Button
@@ -78,7 +86,6 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "amount",
-    // header: () => <div className="text-right">Amount</div>,
     header: ({ column }) => {
       return (
         <Button
@@ -130,89 +137,8 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ];
 
-function getData(): Payment[] {
-  return [
-    {
-      id: "728ed52f",
-      amount: 1000,
-      name: "Neil Kanakia",
-      status: "success",
-    },
-    {
-      id: "128ed52f",
-      amount: 2000,
-      name: "Logan Diliberto",
-      status: "pending",
-    },
-    {
-      id: "928ed52f",
-      amount: 1500,
-      name: "Uday Jain",
-      status: "processing",
-    },
-    {
-      id: "728ed42c",
-      amount: 200,
-      name: "Akshay Lulla",
-      status: "pending",
-    },
-    {
-      id: "728ed67x",
-      amount: 4000,
-      name: "Rayan Shrestha",
-      status: "pending",
-    },
-    {
-      id: "728ed7tx",
-      amount: 4200,
-      name: "Sid Nair",
-      status: "failed",
-    },
-  ];
-}
-// const CreatePaymentButton = () => {
-// const { mutateAsync: createCheckoutSession } =
-//   api.stripe.createCheckoutSession.useMutation();
-// const { push } = useRouter();
-// return (
-{
-  /* <button */
-}
-// className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
-// onClick={async () => {
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-//   const { checkoutUrl } = await createCheckoutSession();
-//   if (checkoutUrl) {
-//     void push(checkoutUrl);
-//   }
-// }}
-// >
-// Upgrade account
-// </button>
-// );
-// };
-
-// const ManageBillingButton = () => {
-//   const { mutateAsync: createBillingPortalSession } =
-//     api.stripe.createBillingPortalSession.useMutation();
-//   const { push } = useRouter();
-//   return (
-//     <button
-//       className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
-//       onClick={async () => {
-//         const { billingPortalUrl } = await createBillingPortalSession();
-//         if (billingPortalUrl) {
-//           void push(billingPortalUrl);
-//         }
-//       }}
-//     >
-//       Manage subscription and billing
-//     </button>
-//   );
-// };
 
 const AdminPayments: NextPage = () => {
-  const mockData = getData();
   const { data: sessionData, status } = useSession();
   const router = useRouter();
   const { mutateAsync: createCheckoutSession } =
@@ -221,7 +147,6 @@ const AdminPayments: NextPage = () => {
   const [paymentDescription, setPaymentDescription] = useState("");
   const [paymentAmountValue, setPaymentAmountValue] = useState("");
   const [paymentDate, setPaymentDate] = useState<Date | null>(null);
-  console.log("👀DATE ->>> ", paymentDate);
 
   const inviteMember = api.invite?.createInvite.useMutation();
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -258,11 +183,14 @@ const AdminPayments: NextPage = () => {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
 
-  // eslint-disable-next-line prefer-const
-  // let users = orgMembers;
-  // console.log(users);
+  const { data: paymentRequests } =
+    api.paymentRequest.getAllOrgPaymentRequests.useQuery(
+      currentUserOrganization.data?.organizationId
+        ? currentUserOrganization.data?.organizationId
+        : ""
+    );
+  // console.log("HI", paymentRequests);
 
-  // const handleSubmitRfq = (e: React.SyntheticEvent) => {
   const mutateCreatePaymentRequest = (e: React.SyntheticEvent) => {
     e.preventDefault();
     createPayment.mutate({
@@ -275,19 +203,12 @@ const AdminPayments: NextPage = () => {
     });
   };
 
-  const { push } = useRouter();
   const {
     data: subscriptionStatus,
     isLoading,
     isError,
   } = api.user.subscriptionStatus.useQuery();
-  // console.log()
-  //type Option = { value: string; label: string };
 
-  // eslint-disable-next-line prefer-const
-  // let options: Option[] = [];
-  // eslint-disable-next-line prefer-const
-  //let options: { value: string; label: string }[] = [];
   // eslint-disable-next-line prefer-const
   let options: any = [];
   useEffect(() => {
@@ -342,7 +263,7 @@ const AdminPayments: NextPage = () => {
                 </div>
                 {/* Table */}
                 <div className="mb-8 mt-8">
-                  <DataTable columns={columns} data={mockData} />
+                  <DataTable columns={columns} data={paymentRequests?.paymentRequest ?? []} />
                 </div>
               </div>
             </div>
