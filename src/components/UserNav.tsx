@@ -42,6 +42,11 @@ const updateNavigation = (page: string): NavigationItem[] => {
       href: "/user",
       current: page === "admin" || page === "user",
     },
+    {
+      name: "Calendar",
+      href: "/user/calendar",
+      current: page === "calendar",
+    }
     // {
     //   name: "Payments",
     //   href: "/user/payments",
