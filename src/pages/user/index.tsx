@@ -104,7 +104,7 @@ const Dashboard: NextPage = () => {
                   </div>
                   */}
                 </div>
-                {/* KPI Charts */}
+                {/*                 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="relative p-4 overflow-hidden text-gray-700 bg-white shadow-lg rounded-xl w-full sm:w-1/3 dark:bg-gray-800 dark:text-gray-100">
                     <a href="#" className="block w-full h-full">
@@ -163,7 +163,7 @@ const Dashboard: NextPage = () => {
                       </div>
                     </a>
                   </div>
-                  {/* Activity Card */}
+                  
                   <div className="relative w-full sm:w-1/3 p-4 overflow-hidden bg-white shadow-lg rounded-xl dark:bg-gray-800">
                     <div className="flex items-center justify-between w-full mb-8">
                       <p className="text-xl font-normal text-gray-800 dark:text-white">
@@ -216,7 +216,7 @@ const Dashboard: NextPage = () => {
                       </div>
                     </div>
                   </div>
-                  {/* Active Projects card */}
+                  
                   <div className="relative w-full sm:w-1/3 p-4 bg-white shadow-lg dark:bg-gray-800 rounded-xl">
                     <p className="text-sm font-semibold text-gray-700 border-b border-gray-200 w-max dark:text-white">
                       Payments received this month
@@ -274,6 +274,7 @@ const Dashboard: NextPage = () => {
                     </div>
                   </div>
                 </div>
+                 */}
                 {/* Table */}
                 <div className="mt-8 mb-8">
                   <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">
@@ -289,6 +290,52 @@ const Dashboard: NextPage = () => {
                       Fulfill a Payment Request
                     </button>
                   </div>
+                  <Table hoverable={true} className="">
+                    <Table.Head>
+                      <Table.HeadCell>
+                        Name
+                      </Table.HeadCell>
+                      <Table.HeadCell>
+                        Amount
+                      </Table.HeadCell>
+                      <Table.HeadCell>
+                        Due Date
+                      </Table.HeadCell>
+                      <Table.HeadCell>
+                        Status
+                      </Table.HeadCell>
+                      <Table.HeadCell>
+                        <span className="sr-only">
+                          Edit
+                        </span>
+                      </Table.HeadCell>
+                    </Table.Head>
+                    <Table.Body className="divide-y">
+                      <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                        <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                          Sid
+                        </Table.Cell>
+                        <Table.Cell>
+                          $200
+                        </Table.Cell>
+                        <Table.Cell>
+                          Tomorrow
+                        </Table.Cell>
+                        <Table.Cell className="flex flex-row gap-2">
+                          <Badge className="w-fit" color="success">
+                            Active
+                          </Badge>
+                        </Table.Cell>
+                        <Table.Cell>
+                        </Table.Cell>
+                      </Table.Row>
+                    </Table.Body>
+                  </Table>
+                </div>
+                <div className="mt-8 mb-8">
+                  <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">
+                    History
+                  </h1>
                   <Table hoverable={true} className="">
                     <Table.Head>
                       <Table.HeadCell>

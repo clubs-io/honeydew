@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -216,6 +218,7 @@ const AdminPayments: NextPage = () => {
   const { mutateAsync: createCheckoutSession } =
     api.stripe.createCheckoutSession.useMutation();
   const [paymentIdalue, setPaymentIdValue] = useState("");
+  const [paymentDescription, setPaymentDescription] = useState("");
   const [paymentAmountValue, setPaymentAmountValue] = useState("");
   const [paymentDate, setPaymentDate] = useState<Date | null>(null);
   console.log("👀DATE ->>> ", paymentDate);
@@ -429,6 +432,23 @@ const AdminPayments: NextPage = () => {
                                     value={paymentAmountValue}
                                     onChange={(e) =>
                                       setPaymentAmountValue(e.target.value)
+                                    }
+                                  />
+                                </div>
+                                <hr className="my-4 h-px border-0 bg-gray-200 dark:bg-gray-700" />
+                                <div className="">
+                                  <p className="text-sm text-gray-800">
+                                    Description
+                                  </p>
+                                  <input
+                                    type="text"
+                                    name="price"
+                                    id="description"
+                                    className="mt-1 block w-full rounded-md border-0 py-1.5 pl-5 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    placeholder="Dues"
+                                    value={paymentDescription}
+                                    onChange={(e) =>
+                                      setPaymentDescription(e.target.value)
                                     }
                                   />
                                 </div>
