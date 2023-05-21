@@ -19,7 +19,6 @@ import { api } from "~/utils/api";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
