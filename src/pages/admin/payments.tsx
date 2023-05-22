@@ -262,6 +262,7 @@ const AdminPayments: NextPage = () => {
                     </button>
                   </div>
                 </div>
+                <hr className="my-8 h-px border-0 bg-gray-200 dark:bg-gray-700" />
                 {/* Table */}
                 <div className="mb-8 mt-8">
                   <DataTable

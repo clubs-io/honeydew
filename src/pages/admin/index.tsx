@@ -269,6 +269,7 @@ const Dashboard: NextPage = () => {
                     </div>
                   </Link>
                 </div>
+                <hr className="my-8 h-px border-0 bg-gray-200 dark:bg-gray-700" />
                 {/* Table */}
                 <div className="mb-8 mt-8">
                   <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block">

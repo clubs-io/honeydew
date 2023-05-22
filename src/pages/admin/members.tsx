@@ -95,11 +95,11 @@ const Members: NextPage = () => {
                 {/* Table */}
                 <div className="flex w-full flex-row">
                   <h1 className="w-60 font-semibold text-slate-500">Active</h1>
-                  <div className="w-full rounded-md border bg-white">
+                  <div className="w-96 rounded-md border bg-white">
                     <Table className="">
-                      <TableHeader>
+                      <TableHeader className="bg-gray-100">
                         <TableRow>
-                          <TableHead className="w-[100px]">Name</TableHead>
+                          <TableHead className="w-2/3">Name</TableHead>
                           <TableHead>Role</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -138,7 +138,11 @@ const Members: NextPage = () => {
                                   <TableCell scope="row">
                                     {member.name}
                                   </TableCell>
-                                  <TableCell>{member.role}</TableCell>
+                                  <TableCell>
+                                    <span className="inline-flex items-center rounded-md bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-gray-500/10">
+                                      {member.role}
+                                    </span>
+                                  </TableCell>
                                 </TableRow>
                               );
                             }
@@ -152,9 +156,9 @@ const Members: NextPage = () => {
                   <h1 className="w-60 font-semibold text-slate-500">
                     Pending invites
                   </h1>
-                  <div className="w-full rounded-md border bg-white">
+                  <div className="w-96 rounded-md border bg-white">
                     <Table className="">
-                      <TableHeader>
+                      <TableHeader className="bg-gray-100">
                         <TableRow>
                           <TableHead className="w-[100px]">Name</TableHead>
                           <TableHead>Role</TableHead>
@@ -165,10 +169,14 @@ const Members: NextPage = () => {
                           orgInvites?.map((invite) => {
                             return (
                               <TableRow key={invite.id}>
-                                <TableCell className="">
+                                <TableCell className="w-2/3">
                                   {invite.email}
                                 </TableCell>
-                                <TableCell>{invite.status}</TableCell>
+                                <TableCell>
+                                  <span className="inline-flex items-center rounded-md bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-gray-500/10">
+                                    {invite.status}
+                                  </span>
+                                </TableCell>
                               </TableRow>
                             );
                           })}

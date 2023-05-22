@@ -119,7 +119,7 @@ const Settings: NextPage = () => {
         <div className="flex h-max w-screen flex-col dark:bg-slate-900">
           <TailwindNav currentPage={"settings"} />
           <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-800">
-            <div className="container flex max-w-7xl flex-col gap-12 px-4 py-8">
+            <div className="container flex max-w-7xl flex-col px-4 py-8">
               <h1 className="text-4xl font-medium text-slate-800 dark:text-slate-100 sm:block">
                 Settings
               </h1>
