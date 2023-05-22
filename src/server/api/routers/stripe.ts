@@ -49,6 +49,7 @@ export const stripeRouter = createTRPCRouter({
     z.object({
       priceAmount: z.number(),
       description: z.string(),
+      paymentRequestId: z.string(),
     }),
     ).mutation(async ({ ctx, input }) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -70,6 +71,9 @@ export const stripeRouter = createTRPCRouter({
       currency: "usd",
       product: product.id,
       unit_amount: Number(input.priceAmount)*100,
+      metadata: {
+        id: input.paymentRequestId
+      }
     })
 
     if (!customerId) {
@@ -96,8 +100,11 @@ export const stripeRouter = createTRPCRouter({
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/user/payments`,
+      success_url: `${baseUrl}/user`,
       cancel_url: `${baseUrl}/user`,
+      metadata: {
+        id: input.paymentRequestId
+      }
     });
 
     if (!checkoutSession) {

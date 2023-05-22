@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { env } from "../../env.mjs";
 import { prisma } from "../../server/db";
@@ -10,6 +12,11 @@ import {
   handleSubscriptionCreatedOrUpdated,
 } from "../../server/stripe/stripe-webhook-handlers";
 import { stripe } from "../../server/stripe/client";
+import Cors from 'micro-cors';
+
+const cors = Cors({
+  allowMethods: ['POST', 'HEAD'],
+});
 
 // Stripe requires the raw body to construct the event.
 export const config = {
@@ -20,10 +27,10 @@ export const config = {
 
 const webhookSecret = env.STRIPE_WEBHOOK_SECRET;
 
-export default async function handler(
+const handler = async(
   req: NextApiRequest,
   res: NextApiResponse
-) {
+) => {
   if (req.method === "POST") {
     const buf = await buffer(req);
     const sig = req.headers["stripe-signature"];
@@ -36,8 +43,18 @@ export default async function handler(
 
       // Handle the event
       switch (event.type) {
-        case "invoice.paid":
+        // case "invoice.paid":
+        //   // Used to provision services after the trial has ended.
+        //   // The status of the invoice will show up as paid. Store the status in your database to reference when a user accesses your service to avoid hitting rate limits.
+        //   await handleInvoicePaid({
+        //     event,
+        //     stripe,
+        //     prisma,
+        //   });
+        //   break;
+        case "checkout.session.completed":
           // Used to provision services after the trial has ended.
+          // console.log("Payment Succeeded");
           // The status of the invoice will show up as paid. Store the status in your database to reference when a user accesses your service to avoid hitting rate limits.
           await handleInvoicePaid({
             event,
@@ -45,35 +62,35 @@ export default async function handler(
             prisma,
           });
           break;
-        case "customer.subscription.created":
-          // Used to provision services as they are added to a subscription.
-          await handleSubscriptionCreatedOrUpdated({
-            event,
-            prisma,
-          });
-          break;
-        case "customer.subscription.updated":
-          // Used to provision services as they are updated.
-          await handleSubscriptionCreatedOrUpdated({
-            event,
-            prisma,
-          });
-          break;
-        case "invoice.payment_failed":
+        // case "customer.subscription.created":
+        //   // Used to provision services as they are added to a subscription.
+        //   await handleSubscriptionCreatedOrUpdated({
+        //     event,
+        //     prisma,
+        //   });
+        //   break;
+        // case "customer.subscription.updated":
+        //   // Used to provision services as they are updated.
+        //   await handleSubscriptionCreatedOrUpdated({
+        //     event,
+        //     prisma,
+        //   });
+        //   break;
+        case "payment_intent.failed":
           // If the payment fails or the customer does not have a valid payment method,
           //  an invoice.payment_failed event is sent, the subscription becomes past_due.
           // Use this webhook to notify your user that their payment has
           // failed and to retrieve new card details.
           // Can also have Stripe send an email to the customer notifying them of the failure. See settings: https://dashboard.stripe.com/settings/billing/automatic
           break;
-        case "customer.subscription.deleted":
-          // handle subscription cancelled automatically based
-          // upon your subscription settings.
-          await handleSubscriptionCanceled({
-            event,
-            prisma,
-          });
-          break;
+        // case "customer.subscription.deleted":
+        //   // handle subscription cancelled automatically based
+        //   // upon your subscription settings.
+        //   await handleSubscriptionCanceled({
+        //     event,
+        //     prisma,
+        //   });
+        //   break;
         default:
         // Unexpected event type
       }
@@ -110,3 +127,4 @@ export default async function handler(
     res.status(405).end("Method Not Allowed");
   }
 }
+export default cors(handler as any);

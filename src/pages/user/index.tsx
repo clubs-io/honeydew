@@ -28,11 +28,13 @@ import {
 type MyComponentProps = {
   paymentAmount: number;
   description: string;
+  paymentRequestId: string;
 };
 
 const FulFillPayment: React.FC<MyComponentProps> = ({
   paymentAmount,
   description,
+  paymentRequestId,
 }) => {
   const { push } = useRouter();
   const { mutateAsync: createCheckoutSession } =
@@ -46,6 +48,7 @@ const FulFillPayment: React.FC<MyComponentProps> = ({
         const { checkoutUrl } = await createCheckoutSession({
           priceAmount: Number(paymentAmount),
           description: String(description),
+          paymentRequestId: String(paymentRequestId),
         });
         if (checkoutUrl) {
           void push(checkoutUrl);
@@ -78,6 +81,7 @@ const Dashboard: NextPage = () => {
   type OptionType = {
     label: string;
     value: number;
+    id: string;
   };
 
   const [options, setOptions] = useState<OptionType[]>([]);
@@ -88,6 +92,7 @@ const Dashboard: NextPage = () => {
         return {
           label: request?.description ?? "",
           value: request?.amount ?? 0,
+          id: request?.id ?? "",
         };
       });
       setOptions(newOptions);
@@ -171,6 +176,7 @@ const Dashboard: NextPage = () => {
                                   <FulFillPayment
                                     paymentAmount={Number(option.value)}
                                     description={String(option.label)}
+                                    paymentRequestId={String(option.id)}
                                   />
                                 </TableCell>
                               </TableRow>
@@ -254,10 +260,10 @@ const Dashboard: NextPage = () => {
                           </div>
                         </div>
                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                          <FulFillPayment
+                          {/* <FulFillPayment
                             paymentAmount={Number(paymentAmountValue)}
                             description={String(paymentDescription)}
-                          ></FulFillPayment>
+                          ></FulFillPayment> */}
                           <button
                             type="button"
                             className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"

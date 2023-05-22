@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { PrismaClient } from "@prisma/client";
 import type Stripe from "stripe";
 
@@ -120,22 +122,27 @@ export const handleInvoicePaid = async ({
   prisma: PrismaClient;
 }) => {
   const invoice = event.data.object as Stripe.Invoice;
-  const subscriptionId = invoice.subscription;
-  const subscription = await stripe.subscriptions.retrieve(
-    subscriptionId as string
-  );
-  const userId = subscription.metadata.userId;
+  // const subscriptionId = invoice.subscription;
+  const paymentid = invoice.metadata!.id;
+  // const ident = obj.metadata.id;
+  // console.log("ID ", ids);
+  // console.log("payment if ", paymentid);
+  // console.log("amount paid ", amount_payment);
+
+  // const subscription = await stripe.subscriptions.retrieve(
+  //   subscriptionId as string
+  // );
+  // const userId = subscription.metadata.userId;
 
   // update user with subscription data
-  await prisma.user.update({
+  await prisma.paymentRequest.updateMany({
     where: {
-      id: userId,
+      id: paymentid
     },
     data: {
-      stripeSubscriptionId: subscription.id,
-      stripeSubscriptionStatus: subscription.status,
-    },
-  });
+      status: "PENDING",
+    }
+  })
 };
 
 export const handleSubscriptionCreatedOrUpdated = async ({
