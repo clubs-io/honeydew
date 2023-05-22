@@ -3,15 +3,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { Badge, Table, Spinner } from "flowbite-react";
+import { Spinner } from "flowbite-react";
 import TailwindNav from "~/components/AdminNav";
 import { useRouter } from "next/router";
 import {
-  ArrowUpIcon,
-  DocumentChartBarIcon,
+  ArrowDownTrayIcon,
   EllipsisVerticalIcon,
-  UserGroupIcon,
   UsersIcon,
+  ArrowsUpDownIcon,
+  BanknotesIcon,
+  BuildingLibraryIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { api } from "~/utils/api";
@@ -26,11 +27,6 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { type ColumnDef } from "@tanstack/react-table";
-import {
-  PlusIcon,
-  CurrencyDollarIcon,
-  ArrowsUpDownIcon,
-} from "@heroicons/react/24/outline";
 import { type PaymentRequest } from "@prisma/client";
 
 const statusColorMap: { [key: string]: string } = {
@@ -48,13 +44,12 @@ const Dashboard: NextPage = () => {
     sessionData?.user.id ? sessionData?.user.id : ""
   );
 
-  const { data: orgMembers, isLoading } =
-    api.organization?.getOrganizationUsers.useQuery({
-      user_id: sessionData?.user.id ? sessionData?.user.id : "",
-      organization_id: currentUserOrganization.data?.organizationId
-        ? currentUserOrganization.data?.organizationId
-        : null,
-    });
+  const { data: orgMembers } = api.organization?.getOrganizationUsers.useQuery({
+    user_id: sessionData?.user.id ? sessionData?.user.id : "",
+    organization_id: currentUserOrganization.data?.organizationId
+      ? currentUserOrganization.data?.organizationId
+      : null,
+  });
 
   const { data: paymentRequests } =
     api.paymentRequest.getAllOrgPaymentRequests.useQuery(
@@ -62,117 +57,111 @@ const Dashboard: NextPage = () => {
         ? currentUserOrganization.data?.organizationId
         : ""
     );
-  
-    const columns: ColumnDef<PaymentRequest>[] = [
-      {
-        accessorKey: "userId",
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              Name
-              <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
-            </Button>
-          );
-        },
-        cell: ({ row }) => {
-          const userId = row.getValue("userId");
-          const userName = orgMembers?.find((member) => member.id === userId)?.name;
-          return (
-            <div className="flex items-center">
-              {userName}
-              </div>
-          )
-    
-        },
+
+  const columns: ColumnDef<PaymentRequest>[] = [
+    {
+      accessorKey: "userId",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Name
+            <ArrowsUpDownIcon className="ml-2 h-4 w-4" />
+          </Button>
+        );
       },
-      {
-        accessorKey: "dueBy",
-        header: "Due by",
-        cell: ({ row }) => {
-          const dueDate: Date = row.getValue("dueBy");
-          const formatted = dueDate.toLocaleDateString(
-            "en-US",
-            {
-              month: "short",
-              day: "numeric",
-            },
-          );
-    
-          return <div className="font-medium">{formatted}</div>;
-        },
+      cell: ({ row }) => {
+        const userId = row.getValue("userId");
+        const userName = orgMembers?.find(
+          (member) => member.id === userId
+        )?.name;
+        return <div className="flex items-center">{userName}</div>;
       },
-      {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-          const status: string = row.getValue("status");
-          const colorClass: string =
-            statusColorMap[status] || "bg-gray-50 text-gray-600"; // Fallback color
-    
-          return (
-            <span
-              className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${colorClass}`}
-            >
-              {status}
-            </span>
-          );
-        },
+    },
+    {
+      accessorKey: "dueBy",
+      header: "Due by",
+      cell: ({ row }) => {
+        const dueDate: Date = row.getValue("dueBy");
+        const formatted = dueDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+
+        return <div className="font-medium">{formatted}</div>;
       },
-      {
-        accessorKey: "amount",
-        header: ({ column }) => {
-          return (
-            <Button
-              variant="ghost"
-              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-              <ArrowsUpDownIcon className="mr-2 h-4 w-4" />
-              Amount
-            </Button>
-          );
-        },
-        cell: ({ row }) => {
-          const amount = parseFloat(row.getValue("amount"));
-          const formatted = new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-          }).format(amount);
-    
-          return <div className="font-medium">{formatted}</div>;
-        },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status: string = row.getValue("status");
+        const colorClass: string =
+          statusColorMap[status] || "bg-gray-50 text-gray-600"; // Fallback color
+
+        return (
+          <span
+            className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10 ${colorClass}`}
+          >
+            {status}
+          </span>
+        );
       },
-      {
-        id: "actions",
-        cell: ({ row }) => {
-          const payment = row.original;
-    
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <EllipsisVerticalIcon className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(payment.id)}
-                >
-                  Copy payment ID
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>View customer</DropdownMenuItem>
-                <DropdownMenuItem>View payment details</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          );
-        },
+    },
+    {
+      accessorKey: "amount",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            <ArrowsUpDownIcon className="mr-2 h-4 w-4" />
+            Amount
+          </Button>
+        );
       },
-    ];
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("amount"));
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(amount);
+
+        return <div className="font-medium">{formatted}</div>;
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const payment = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <EllipsisVerticalIcon className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.id)}
+              >
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
 
   if (status === "unauthenticated") {
     void router.push("/");
@@ -199,57 +188,69 @@ const Dashboard: NextPage = () => {
                   ) : (
                     <p>no session data</p>
                   )}
-                  {/*<div className="">
-                    <button type="button" className="flex py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                      <ArrowUpTrayIcon className="w-5 h-5 mr-2" />
-                      Import
+                  <div className="">
+                    <button
+                      type="button"
+                      className="mb-2 mr-2 flex rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                    >
+                      <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
+                      Export
                     </button>
                   </div>
-                  */}
                 </div>
                 <div className="mt-8 flex flex-col items-center justify-start gap-4 sm:flex-row">
                   {/* Card 1 */}
                   <Link
-                    className="shaod-sm flex w-full flex-col gap-6 overflow-hidden rounded-lg bg-sky-100 p-6 shadow-sm sm:w-1/3"
-                    href={"/settings"}
+                    className="flex w-full flex-col gap-6 overflow-hidden rounded-lg bg-gradient-to-br from-sky-100 to-indigo-100 p-6 shadow-sm sm:w-1/3"
+                    href={"/admin/members"}
                   >
                     <div className="flex flex-row justify-between">
-                      <div className="w-fit rounded-lg p-3">
-                        <UsersIcon className="h-6 w-6 text-gray-800" />
+                      <div className="">
+                        <UsersIcon className="h-8 w-8 text-gray-800" />
                       </div>
                       <EllipsisVerticalIcon className="h-5 w-5" />
                     </div>
                     <div>
                       <h3 className="text-gray-600">No. Members</h3>
                       <div className="flex w-full flex-row items-center justify-between">
-                        <span className="text-4xl font-semibold text-gray-800">
+                        <span className="text-4xl font-semibold text-gray-700">
                           {orgMembers?.length ?? "1"}
                         </span>
                       </div>
                     </div>
                   </Link>
-                  <div className="shaod-sm flex w-full flex-col gap-6 overflow-hidden rounded-lg bg-orange-100 p-6 shadow-sm sm:w-1/3">
+                  <Link
+                    className="flex w-full flex-col gap-6 overflow-hidden rounded-lg bg-gradient-to-br from-purple-100 to-rose-100 p-6 shadow-sm sm:w-1/3"
+                    href={"/admin/members"}
+                  >
                     <div className="flex flex-row justify-between">
-                      <div className="w-fit rounded-lg p-3">
-                        <UsersIcon className="h-6 w-6 text-gray-800" />
+                      <div className="">
+                        <BanknotesIcon className="h-8 w-8 text-gray-800" />
                       </div>
                       <EllipsisVerticalIcon className="h-5 w-5" />
                     </div>
                     <div>
                       <h3 className="text-gray-600">Dues requested</h3>
                       <div className="flex w-full flex-row items-center justify-between">
-                        <span className="text-4xl font-semibold text-gray-800">
-                          ${paymentRequests?.paymentRequest ? 
-                          paymentRequests?.paymentRequest.reduce((sum, obj) => sum + obj.amount, 0)
-                           : "-"}
+                        <span className="text-4xl font-semibold text-gray-700">
+                          $
+                          {paymentRequests?.paymentRequest
+                            ? paymentRequests?.paymentRequest.reduce(
+                                (sum, obj) => sum + obj.amount,
+                                0
+                              )
+                            : "-"}
                         </span>
                       </div>
                     </div>
-                  </div>
-                  <div className="shaod-sm flex w-full flex-col gap-6 overflow-hidden rounded-lg bg-pink-100 p-6 shadow-sm sm:w-1/3">
+                  </Link>
+                  <Link
+                    className="flex w-full flex-col gap-6 overflow-hidden rounded-lg bg-gradient-to-br from-yellow-100 to-orange-100 p-6 shadow-sm sm:w-1/3"
+                    href={"/admin/members"}
+                  >
                     <div className="flex flex-row justify-between">
-                      <div className="w-fit rounded-lg p-3">
-                        <UsersIcon className="h-6 w-6 text-gray-800" />
+                      <div className="">
+                        <BuildingLibraryIcon className="h-8 w-8 text-gray-700" />
                       </div>
                       <EllipsisVerticalIcon className="h-5 w-5" />
                     </div>
@@ -257,15 +258,16 @@ const Dashboard: NextPage = () => {
                       <h3 className="text-gray-600">Dues collected</h3>
                       <div className="flex w-full flex-row items-center justify-between">
                         <span className="text-4xl font-semibold text-gray-800">
-                          ${paymentRequests?.paymentRequest ? 
-                          paymentRequests?.paymentRequest
-                          .filter(obj => obj.status === "COMPLETED")
-                          .reduce((sum, obj) => sum + obj.amount, 0)
-                          : "-"}
+                          $
+                          {paymentRequests?.paymentRequest
+                            ? paymentRequests?.paymentRequest
+                                .filter((obj) => obj.status === "COMPLETED")
+                                .reduce((sum, obj) => sum + obj.amount, 0)
+                            : "-"}
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
                 {/* Table */}
                 <div className="mb-8 mt-8">
@@ -273,7 +275,10 @@ const Dashboard: NextPage = () => {
                     Upcoming Payment Requests
                   </h1>
                   <div className="mb-8 mt-8">
-                    <DataTable columns={columns} data={paymentRequests?.paymentRequest ?? []} />
+                    <DataTable
+                      columns={columns}
+                      data={paymentRequests?.paymentRequest ?? []}
+                    />
                   </div>
                 </div>
               </div>
