@@ -38,7 +38,6 @@ const statusColorMap: { [key: string]: string } = {
   REJECTED: "bg-red-50 text-red-700",
 };
 
-
 const AdminPayments: NextPage = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter();
@@ -140,13 +139,10 @@ const AdminPayments: NextPage = () => {
       },
       cell: ({ row }) => {
         const userId = row.getValue("userId");
-        const userName = orgMembers?.find((member) => member.id === userId)?.name;
-        return (
-          <div className="flex items-center">
-            {userName}
-            </div>
-        )
-
+        const userName = orgMembers?.find(
+          (member) => member.id === userId
+        )?.name;
+        return <div className="flex items-center">{userName}</div>;
       },
     },
     {
@@ -154,13 +150,10 @@ const AdminPayments: NextPage = () => {
       header: "Due by",
       cell: ({ row }) => {
         const dueDate: Date = row.getValue("dueBy");
-        const formatted = dueDate.toLocaleDateString(
-          "en-US",
-          {
-            month: "short",
-            day: "numeric",
-          },
-        );
+        const formatted = dueDate.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
 
         return <div className="font-medium">{formatted}</div>;
       },
@@ -234,9 +227,6 @@ const AdminPayments: NextPage = () => {
       },
     },
   ];
-  if (isLoading) {
-    return <div>Loading</div>;
-  }
   if (isError) {
     return <div>Please Contact Support for Help!</div>;
   }
@@ -274,7 +264,10 @@ const AdminPayments: NextPage = () => {
                 </div>
                 {/* Table */}
                 <div className="mb-8 mt-8">
-                  <DataTable columns={columns} data={paymentRequests?.paymentRequest ?? []} />
+                  <DataTable
+                    columns={columns}
+                    data={paymentRequests?.paymentRequest ?? []}
+                  />
                 </div>
               </div>
             </div>
@@ -397,8 +390,10 @@ const AdminPayments: NextPage = () => {
                                     placeholder="May 11th"
                                     value={
                                       paymentDate
-                                      ? paymentDate.toISOString().substring(0, 10)
-                                      : undefined
+                                        ? paymentDate
+                                            .toISOString()
+                                            .substring(0, 10)
+                                        : undefined
                                     }
                                     onChange={handleDateChange}
                                   />
