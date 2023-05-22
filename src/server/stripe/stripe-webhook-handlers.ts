@@ -140,7 +140,7 @@ export const handleInvoicePaid = async ({
       id: paymentid
     },
     data: {
-      status: "PENDING",
+      status: "COMPLETED",
     }
   })
 };
