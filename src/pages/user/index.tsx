@@ -9,7 +9,6 @@ import { Badge, Spinner } from "flowbite-react";
 import UserNav from "~/components/UserNav";
 import {
   ArrowRightCircleIcon,
-  PlusCircleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import { useRouter } from "next/router";
@@ -81,7 +80,6 @@ const Dashboard: NextPage = () => {
     value: number;
   };
 
-  // let options: OptionType[];
   const [options, setOptions] = useState<OptionType[]>([]);
 
   useEffect(() => {
@@ -96,27 +94,15 @@ const Dashboard: NextPage = () => {
     }
   }, [paymentRequests]);
 
-  // useEffect(() => {
-  //   if (paymentRequests) {
-  //     for (let i = 0; i < paymentRequests.paymentRequests.length; i++) {
-  //       // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
-  //       options.push({
-  //         label: paymentRequests.paymentRequests[i]?.description ?? "",
-  //         value: paymentRequests.paymentRequests[i]?.amount ?? 0,
-  //       });
-  //     }
-  //   }
-  // }, [paymentRequests]);
-
   if (status === "unauthenticated") {
     void router.push("/");
   }
   if (status === "authenticated") {
     return (
       <>
-        <div className="flex h-max w-screen flex-col dark:bg-slate-900">
+        <div className="flex h-max w-screen flex-col ">
           <UserNav currentPage={"user"} />
-          <main className="flex min-h-screen w-screen flex-row justify-center bg-slate-50 dark:bg-slate-700">
+          <main className="flex min-h-screen w-screen flex-row justify-center bg-white dark:bg-slate-700">
             <div className="container mx-16 mt-12 max-w-7xl gap-12">
               <div className="h-full w-full">
                 {/* Header */}
@@ -134,77 +120,67 @@ const Dashboard: NextPage = () => {
                     <p>no session data</p>
                   )}
                 </div>
-                {/* Table */}
-                <div className="mb-8 mt-8">
-                  <div className="flex w-full flex-row justify-between">
+                <div className="flex flex-row gap-12">
+                  <div className="mb-8 mt-8 w-96">
                     <h1 className="mb-4 text-3xl font-medium text-gray-700 dark:text-slate-100 sm:block">
-                      Pending Dues
+                      Overview
                     </h1>
+                    <div className="mt-8 rounded-md border p-4">
+                      <div className="flex flex-row justify-between">
+                        <p className="text-xl text-gray-700">Current balance</p>
+                        <h1 className="text-3xl font-semibold text-gray-700">
+                          $1,500.00
+                        </h1>
+                      </div>
+                      <div className="mt-4 flex flex-row justify-between">
+                        <p className="text-xl text-gray-700">Due Date</p>
+                        <h1 className="text-3xl font-semibold text-gray-700">
+                          May 26
+                        </h1>
+                      </div>
+                    </div>
                   </div>
                   {/* Table */}
-                  <div className="mt-4 w-fit rounded-md border bg-white">
-                    <Table className="">
-                      <TableHeader className="bg-gray-50">
-                        <TableRow>
-                          <TableHead className="w-[100px]">Payment</TableHead>
-                          <TableHead>Amount</TableHead>
-                          <TableHead>Due by</TableHead>
-                          <TableHead>Action</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {options?.map((option: any) => {
-                          return (
-                            <TableRow key={option.label}>
-                              <TableCell className="w-96">
-                                {option.label}
-                              </TableCell>
-                              <TableCell>$100.00</TableCell>
-                              <TableCell>May 26</TableCell>
-                              <TableCell>
-                                <FulFillPayment
-                                  paymentAmount={Number(option.value)}
-                                  description={String(option.label)}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
+                  <div className="mb-8 mt-8">
+                    <div className="flex w-full flex-row justify-between">
+                      <h1 className="mb-4 text-3xl font-medium text-gray-700 dark:text-slate-100 sm:block">
+                        Pending Dues
+                      </h1>
+                    </div>
+                    {/* Table */}
+                    <div className="mt-4 w-fit rounded-md border">
+                      <Table className="">
+                        <TableHeader className="bg-gray-50">
+                          <TableRow>
+                            <TableHead className="w-[100px]">Payment</TableHead>
+                            <TableHead>Amount</TableHead>
+                            <TableHead>Due by</TableHead>
+                            <TableHead>Action</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {options?.map((option: any) => {
+                            return (
+                              <TableRow key={option.label}>
+                                <TableCell className="w-96">
+                                  {option.label}
+                                </TableCell>
+                                <TableCell>$100.00</TableCell>
+                                <TableCell>May 26</TableCell>
+                                <TableCell>
+                                  <FulFillPayment
+                                    paymentAmount={Number(option.value)}
+                                    description={String(option.label)}
+                                  />
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </div>
                   </div>
                 </div>
-                {/* <div className="mb-8 mt-8"> */}
-                {/*   <h1 className="mb-4 text-3xl font-medium text-slate-800 dark:text-slate-100 sm:block"> */}
-                {/*     History */}
-                {/*   </h1> */}
-                {/*   <div className="rounded-md border bg-white"> */}
-                {/*     <Table className=""> */}
-                {/*       <TableHeader className="bg-gray-50"> */}
-                {/*         <TableHead>Name</TableHead> */}
-                {/*         <TableHead>Amount</TableHead> */}
-                {/*         <TableHead>Due Date</TableHead> */}
-                {/*         <TableHead>Status</TableHead> */}
-                {/*         <TableHead> */}
-                {/*           <span className="sr-only">Edit</span> */}
-                {/*         </TableHead> */}
-                {/*       </TableHeader> */}
-                {/*       <TableBody className="divide-y"> */}
-                {/*         <TableRow className=""> */}
-                {/*           <TableCell className="">Sid</TableCell> */}
-                {/*           <TableCell>$200</TableCell> */}
-                {/*           <TableCell>Tomorrow</TableCell> */}
-                {/*           <TableCell className=""> */}
-                {/*             <Badge className="" color="success"> */}
-                {/*               Active */}
-                {/*             </Badge> */}
-                {/*           </TableCell> */}
-                {/*           <TableCell></TableCell> */}
-                {/*         </TableRow> */}
-                {/*       </TableBody> */}
-                {/*     </Table> */}
-                {/*   </div> */}
-                {/* </div> */}
               </div>
             </div>
           </main>

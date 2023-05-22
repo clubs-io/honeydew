@@ -1,11 +1,6 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  Bars3Icon,
-  BellIcon,
-  UserIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { Bars3Icon, UserIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 
@@ -46,12 +41,7 @@ const updateNavigation = (page: string): NavigationItem[] => {
       name: "Calendar",
       href: "/user/calendar",
       current: page === "calendar",
-    }
-    // {
-    //   name: "Payments",
-    //   href: "/user/payments",
-    //   current: page === "payments",
-    // },
+    },
   ];
 };
 
@@ -60,7 +50,7 @@ export default function UserNav({ currentPage }: NavProps) {
   const { data: sessionData } = useSession();
 
   return (
-    <Disclosure as="nav" className="bg-slate-50 dark:bg-slate-600">
+    <Disclosure as="nav" className="">
       {({ open }) => (
         <>
           <div className="mx-auto border-b border-slate-200 px-2 dark:border-slate-500 sm:px-6 lg:px-8">
@@ -101,7 +91,6 @@ export default function UserNav({ currentPage }: NavProps) {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
@@ -120,16 +109,6 @@ export default function UserNav({ currentPage }: NavProps) {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      {/* <Menu.Item> */}
-                      {/*   {({ active }) => ( */}
-                      {/*     <a */}
-                      {/*       href="#" */}
-                      {/*       className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')} */}
-                      {/*     > */}
-                      {/*       Your Profile */}
-                      {/*     </a> */}
-                      {/*   )} */}
-                      {/* </Menu.Item> */}
                       <Menu.Item>
                         {({ active }) => (
                           <button
