@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { PrismaClient } from "@prisma/client";
+import { env } from "process";
 import type Stripe from "stripe";
 
 export const getOrCreateStripeAccountForOrg = async ({
@@ -57,6 +58,14 @@ export const getOrCreateStripeAccountForOrg = async ({
   }
 
   console.log(account.id);
+  
+  const accountLink = await stripe.accountLinks.create({
+    account: '{{CONNECTED_ACCOUNT_ID}}',
+    refresh_url: `localhost:3000/admin/settings`,
+    return_url: 'localhost:3000/admin/settings',
+    type: 'account_onboarding',
+  });
+  const link = accountLink.url;
 
   return account;
 
@@ -65,8 +74,7 @@ export const getOrCreateStripeAccountForOrg = async ({
   // }
 };
 
-// retrieves a Stripe customer id for a given user if it exists or creates a new one
-export const getOrCreateStripeCustomerIdForUser = async ({
+export const createStripeAccountForOrg = async ({
   stripe,
   prisma,
   userId,
@@ -74,6 +82,94 @@ export const getOrCreateStripeCustomerIdForUser = async ({
   stripe: Stripe;
   prisma: PrismaClient;
   userId: string;
+}) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  const account = await stripe.accounts.create({
+    type: "standard",
+    // use metadata to link this Stripe customer to internal user id
+    // metadata: {
+    //   userId,
+    // },
+  });
+
+  console.log("Account id: ", account.id);
+
+  let org;
+  if (user?.organizationId !== null) {
+    org = await prisma.organization.findUnique({
+      where: {
+        id: user?.organizationId,
+      },
+    });
+  }
+
+  let updatedOrg;
+  if (user !== null && user.organizationId !== null) {
+    updatedOrg = await prisma.organization.update({
+      where: {
+        id: user.organizationId,
+      },
+      data: {
+        stripeOrganizationId: account.id,
+      },
+    });
+  }
+  
+  const accountLink = await stripe.accountLinks.create({
+    account: account.id,
+    refresh_url: `http://localhost:3000/settings`,
+    return_url: 'http://localhost:3000/settings',
+    type: 'account_onboarding',
+  });
+  const link = accountLink.url;
+  console.log("Account Link: ", link);
+  return link;
+};
+
+export const getStripeAccountForOrg = async ({
+  stripe,
+  prisma,
+  userId,
+}: {
+  stripe: Stripe;
+  prisma: PrismaClient;
+  userId: string;
+}) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  let org;
+  if (user?.organizationId !== null) {
+    org = await prisma.organization.findUnique({
+      where: {
+        id: user?.organizationId,
+      },
+    });
+  }
+
+  if (org?.stripeOrganizationId)
+    return org?.stripeOrganizationId;
+};
+
+// retrieves a Stripe customer id for a given user if it exists or creates a new one
+export const getOrCreateStripeCustomerIdForUser = async ({
+  stripe,
+  prisma,
+  userId,
+  orgStripeId,
+}: {
+  stripe: Stripe;
+  prisma: PrismaClient;
+  userId: string;
+  orgStripeId: string;
 }) => {
   const user = await prisma.user.findUnique({
     where: {
@@ -95,6 +191,9 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     metadata: {
       userId,
     },
+  },
+  {
+    stripeAccount: orgStripeId,
   });
 
   // update with new customer id

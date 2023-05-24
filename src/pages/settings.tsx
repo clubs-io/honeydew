@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
@@ -34,10 +35,10 @@ const ConnectAccount = () => {
       className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
       onClick={async () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        console.log("clicked");
-        const id = await createAccount();
-        // <p> {id} </p>
-        console.log(id);
+        const checkoutUrl = await createAccount();
+        if (checkoutUrl) {
+          void push(checkoutUrl);
+        }
       }}
     >
       Connect Stripe Account
