@@ -107,37 +107,40 @@ export const stripeRouter = createTRPCRouter({
 
     return { checkoutUrl: checkoutSession.url };
   }),
-  createBillingPortalSession: protectedProcedure.mutation(async ({ ctx }) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { stripe, session, prisma, req } = ctx;
+  // createBillingPortalSession: protectedProcedure.mutation(async ({ ctx }) => {
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  //   const { stripe, session, prisma, req } = ctx;
 
-    const customerId = await getOrCreateStripeCustomerIdForUser({
-      prisma,
-      stripe,
-      userId: session.user?.id,
-    });
+  //   const orgId = 
 
-    if (!customerId) {
-      throw new Error("Could not create customer");
-    }
+  //   const customerId = await getOrCreateStripeCustomerIdForUser({
+  //     prisma,
+  //     stripe,
+  //     userId: session.user?.id,
+  //     orgStripeId: orgId,
+  //   });
 
-    const baseUrl =
-      env.NODE_ENV === "development"
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-        ? `http://${req.headers.host ?? "localhost:3000"}`
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-        : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
+  //   if (!customerId) {
+  //     throw new Error("Could not create customer");
+  //   }
 
-    const stripeBillingPortalSession =
-      await stripe.billingPortal.sessions.create({
-        customer: customerId,
-        return_url: `${baseUrl}/dashboard`,
-      });
+  //   const baseUrl =
+  //     env.NODE_ENV === "development"
+  //       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+  //       ? `http://${req.headers.host ?? "localhost:3000"}`
+  //       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+  //       : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
 
-    if (!stripeBillingPortalSession) {
-      throw new Error("Could not create billing portal session");
-    }
+  //   const stripeBillingPortalSession =
+  //     await stripe.billingPortal.sessions.create({
+  //       customer: customerId,
+  //       return_url: `${baseUrl}/dashboard`,
+  //     });
 
-    return { billingPortalUrl: stripeBillingPortalSession.url };
-  }),
+  //   if (!stripeBillingPortalSession) {
+  //     throw new Error("Could not create billing portal session");
+  //   }
+
+  //   return { billingPortalUrl: stripeBillingPortalSession.url };
+  // }),
 });
