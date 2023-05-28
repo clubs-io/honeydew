@@ -5,12 +5,12 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "cypress": "cypress open",
+    "test": "cypress open",
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
     "prisma:push": "npx prisma db push",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest"
+    "stripe": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
