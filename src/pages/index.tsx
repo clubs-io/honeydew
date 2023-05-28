@@ -5,15 +5,11 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { BuildingOfficeIcon, CheckIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import { HeroBanner } from "~/components/HeroBanner";
 import MarketingNavBar from "~/components/MarketingNavBar";
 import Footer from "~/components/Footer";
-import CTA from "~/components/CTA";
 
 const Home: NextPage = () => {
-  // const { isSignedIn } = useAuth();
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   const { data: sessionData } = useSession();
   const router = useRouter();
   const [orgName, setOrgName] = useState("");
@@ -102,18 +98,11 @@ const Home: NextPage = () => {
           </div>
         </main>
       ) : (
-        <div className="">
+        <main className="flex min-h-screen flex-col justify-between">
           <MarketingNavBar />
           <HeroBanner />
-          {/* <CTA /> */}
           <Footer />
-          {/* <button
-            className="text-lg font-bold text-blue-500 no-underline "
-            onClick={() => void signIn()}
-          >
-            {sessionData ? "Sign out" : "Sign in"}
-          </button> */}
-        </div>
+        </main>
       )}
     </>
   );
