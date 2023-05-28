@@ -141,7 +141,9 @@ const Dashboard: NextPage = () => {
                         <h1 className="text-3xl font-semibold text-gray-700">
                         $
                           {paymentRequests?.paymentRequests
-                            ? paymentRequests?.paymentRequests.reduce(
+                            ? paymentRequests?.paymentRequests
+                              .filter((obj) => obj.status === "PENDING")
+                              .reduce(
                                 (sum, obj) => sum + obj.amount,
                                 0
                               )
