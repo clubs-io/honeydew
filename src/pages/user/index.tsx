@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -82,6 +83,7 @@ const Dashboard: NextPage = () => {
     label: string;
     value: number;
     id: string;
+    dueBy: string;
   };
 
   const [options, setOptions] = useState<OptionType[]>([]);
@@ -93,6 +95,7 @@ const Dashboard: NextPage = () => {
           label: request?.description ?? "",
           value: request?.amount ?? 0,
           id: request?.id ?? "",
+          dueBy: String(request?.dueBy) ?? "",
         };
       });
       setOptions(newOptions);
@@ -170,8 +173,8 @@ const Dashboard: NextPage = () => {
                                 <TableCell className="w-96">
                                   {option.label}
                                 </TableCell>
-                                <TableCell>$100.00</TableCell>
-                                <TableCell>May 26</TableCell>
+                                <TableCell>{option.value}</TableCell>
+                                <TableCell>{option.dueBy.substring(0, 10)}</TableCell>
                                 <TableCell>
                                   <FulFillPayment
                                     paymentAmount={Number(option.value)}
