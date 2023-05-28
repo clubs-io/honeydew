@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable prefer-const */
@@ -137,13 +139,13 @@ const Dashboard: NextPage = () => {
                       <div className="flex flex-row justify-between">
                         <p className="text-xl text-gray-700">Current balance</p>
                         <h1 className="text-3xl font-semibold text-gray-700">
-                          $1,500.00
-                        </h1>
-                      </div>
-                      <div className="mt-4 flex flex-row justify-between">
-                        <p className="text-xl text-gray-700">Due Date</p>
-                        <h1 className="text-3xl font-semibold text-gray-700">
-                          May 26
+                        $
+                          {paymentRequests?.paymentRequests
+                            ? paymentRequests?.paymentRequests.reduce(
+                                (sum, obj) => sum + obj.amount,
+                                0
+                              )
+                            : "-"}
                         </h1>
                       </div>
                     </div>
