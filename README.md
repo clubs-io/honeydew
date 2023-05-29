@@ -1,28 +1,28 @@
-# Create T3 App
+# Honeydew
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is an Open Source project to allow college organizations to make payments and handle their finances. 
 
-## What's next? How do I make an app with this?
+## About this project
+This project as an experiment to build a modern app (with features like authentication, payments, API routes) would work in Next.js 13.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://discord.gg/ZURcMR3v) and ask for help.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Known Issues:
+A list of things not working right now:
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+1. Discord authentication (use email)
+2. UTC Time Conversions from Admin to Client Side on Frontend
 
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## Running Locally
+1. Install dependencies using yarn:
+```sh
+yarn
+```
+2. Copy .env.example to .env.local and update the variables.
+```sh
+cp .env.example .env
+```
+3. Start the development server:
+```sh
+yarn dev
+```
