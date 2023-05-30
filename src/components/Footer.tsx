@@ -29,7 +29,7 @@ const Footer = () => {
             href="#"
             className="mb-5 flex items-center justify-center text-2xl font-semibold text-gray-900 dark:text-white"
           >
-            {/* <Image src="./images/logo.svg" fill class="h-6 mr-3 sm:h-9" alt="Landwind Logo" /> */}
+            {/* <Image src="./images/logo.svg" fill className="h-6 mr-3 sm:h-9" alt="Landwind Logo" /> */}
             Honeydew
           </Link>
           <span className="block text-center text-sm text-gray-500 dark:text-gray-400">

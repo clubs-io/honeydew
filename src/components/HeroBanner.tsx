@@ -34,8 +34,8 @@ export function HeroBanner() {
           </Link>
         </div>
       </div>
-      <div className="hidden lg:col-span-5 lg:mt-0 lg:flex">
-        <Image src="/dancing.svg" alt="Honeydew" width={1064} height={832} />
+      <div className="sm:flex lg:col-span-5 lg:mt-0">
+        <Image src="/dancing.svg" alt="Honeydew" width={532} height={416} />
       </div>
     </div>
   );

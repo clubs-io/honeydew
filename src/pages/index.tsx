@@ -6,8 +6,10 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { BuildingOfficeIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { HeroBanner } from "~/components/HeroBanner";
+import { Testimonial } from "~/components/Testimonial";
 import MarketingNavBar from "~/components/MarketingNavBar";
 import Footer from "~/components/Footer";
+import { Test } from "mocha";
 
 const Home: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -101,6 +103,7 @@ const Home: NextPage = () => {
         <main className="flex min-h-screen flex-col justify-between">
           <MarketingNavBar />
           <HeroBanner />
+          <Testimonial />
           <Footer />
         </main>
       )}
