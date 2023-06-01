@@ -8,7 +8,7 @@ export function HeroBanner() {
       <div className="mr-auto place-self-center lg:col-span-7">
         <h1 className="mb-4 max-w-2xl text-4xl font-extrabold leading-none tracking-tight dark:text-white md:text-5xl xl:text-6xl">
           Financial solutions for your{" "}
-          <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text font-extrabold text-transparent">
+          <span className="bg-gradient-to-r from-fuchsia-400 via-purple-400 to-indigo-400 bg-clip-text font-extrabold text-transparent">
             college community
           </span>
         </h1>
